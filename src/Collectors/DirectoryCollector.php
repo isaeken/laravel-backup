@@ -68,7 +68,6 @@ class DirectoryCollector extends BaseCollector implements Collector
             }
         }
 
-        $this->items = $items;
-        return $this;
+        return $this->setItems($items);
     }
 }
