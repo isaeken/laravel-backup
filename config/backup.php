@@ -1,7 +1,7 @@
 <?php
 
 use IsaEken\LaravelBackup\BackupServices\StorageBackupService;
-use IsaEken\LaravelBackup\Storages\FakeStorage;
+use IsaEken\LaravelBackup\Storages\FakeBackupStorage;
 
 // @todo
 return [
@@ -36,7 +36,7 @@ return [
          */
 
         'storages' => [
-            FakeStorage::class,
+            FakeBackupStorage::class,
         ],
 
 
@@ -69,7 +69,7 @@ return [
          */
 
         'storages' => [
-            FakeStorage::class,
+            FakeBackupStorage::class,
         ],
 
         // ...
