@@ -5,6 +5,7 @@ namespace IsaEken\LaravelBackup\Compressors;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Compressors\Compressor as BaseCompressor;
+use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Contracts\Compressor;
 use IsaEken\LaravelBackup\Exceptions\MissingExtensionException;
 use RecursiveDirectoryIterator;
@@ -22,8 +23,9 @@ class ZipCompressor extends BaseCompressor implements Compressor
         return Str::of($path)->after($this->getSource() . DIRECTORY_SEPARATOR);
     }
 
-    public function __construct()
+    public function __construct(public BackupService $service)
     {
+        parent::__construct($this->service);
         throw_unless(extension_loaded('zip'), MissingExtensionException::class, 'zip');
         $this->zipArchive = new ZipArchive;
     }
