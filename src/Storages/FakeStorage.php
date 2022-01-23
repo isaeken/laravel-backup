@@ -24,7 +24,12 @@ class FakeStorage implements BackupStorage
     public function save(string $filepath, string $directory): bool
     {
         $path = '/' . Str::slug(config('backup.name'), '_') . '/' . Str::slug($directory, '_') . '/' . basename($filepath);
-        static::$filesystem[$path] = File::get($filepath);
+        if (File::exists($filepath)) {
+            static::$filesystem[$path] = File::get($filepath);
+        } else {
+            static::$filesystem[$path] = '';
+        }
+
         return true;
     }
 }
