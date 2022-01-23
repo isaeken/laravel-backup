@@ -18,6 +18,8 @@ class ZipCompressor extends BaseCompressor implements Compressor
 
     protected ZipArchive $zipArchive;
 
+    public string $password = '';
+
     private function zippedPath(string $path): string
     {
         return Str::of($path)->after($this->getSource() . DIRECTORY_SEPARATOR);
@@ -36,6 +38,12 @@ class ZipCompressor extends BaseCompressor implements Compressor
     public function setDestination(string $destination): static
     {
         $this->destination = $destination . DIRECTORY_SEPARATOR . now()->format(static::FILENAME_FORMAT);
+        return $this;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
         return $this;
     }
 
@@ -68,6 +76,10 @@ class ZipCompressor extends BaseCompressor implements Compressor
             }
         } elseif (is_file($source) === true) {
             $this->zipArchive->addFromString(basename($source), file_get_contents($source));
+        }
+
+        if (mb_strlen($this->password) > 0) {
+            $this->zipArchive->setPassword($this->password);
         }
 
         return $this->zipArchive->close();
