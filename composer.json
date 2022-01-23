@@ -38,6 +38,7 @@
     "require": {
         "php": "^8.0",
         "laravel/framework": "^8.80",
+        "spatie/db-dumper": "^3.1",
         "spatie/dropbox-api": "^1.19",
         "spatie/laravel-package-tools": "^1.11.0",
         "spatie/temporary-directory": "^2.0.0"
