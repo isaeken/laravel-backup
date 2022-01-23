@@ -1,6 +1,6 @@
 <?php
 
-namespace IsaEken\LaravelBackup\Tasks;
+namespace IsaEken\LaravelBackup;
 
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
 use IsaEken\LaravelBackup\Contracts\BackupService;
