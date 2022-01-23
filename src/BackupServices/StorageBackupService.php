@@ -5,6 +5,7 @@ namespace IsaEken\LaravelBackup\BackupServices;
 use Illuminate\Support\Facades\File;
 use IsaEken\LaravelBackup\BackupServices\BackupService as BaseBackupService;
 use IsaEken\LaravelBackup\Collectors\DirectoryCollector;
+use IsaEken\LaravelBackup\Contracts\BackupManager;
 use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Exceptions\CompressorNotProvidedException;
 
@@ -32,9 +33,9 @@ class StorageBackupService extends BaseBackupService implements BackupService
         return $this->temporaryDirectory->path('backup');
     }
 
-    public function __construct($container)
+    public function __construct(public BackupManager $backupManager)
     {
-        parent::__construct($container);
+        parent::__construct($this->backupManager);
         $this->storage_path = storage_path();
     }
 

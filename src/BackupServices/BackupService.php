@@ -4,6 +4,7 @@ namespace IsaEken\LaravelBackup\BackupServices;
 
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Str;
+use IsaEken\LaravelBackup\Contracts\BackupManager;
 use IsaEken\LaravelBackup\Contracts\Compressor;
 use IsaEken\LaravelBackup\Traits\HasOutput;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
@@ -22,10 +23,12 @@ abstract class BackupService implements \IsaEken\LaravelBackup\Contracts\BackupS
 
     protected TemporaryDirectory $temporaryDirectory;
 
-    public function __construct($container)
+    public function __construct(public BackupManager $backupManager)
     {
-        if ($container?->getOutput() instanceof OutputStyle) {
-            $this->setOutput($container->getOutput());
+        $this->setBackupManager($this->backupManager);
+
+        if ($this->getBackupManager()->getOutput() instanceof OutputStyle) {
+            $this->setOutput($this->getBackupManager()->getOutput());
         }
 
         $this->temporaryDirectory = (new TemporaryDirectory())
@@ -46,6 +49,23 @@ abstract class BackupService implements \IsaEken\LaravelBackup\Contracts\BackupS
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBackupManager(): BackupManager
+    {
+        return $this->backupManager;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setBackupManager(BackupManager $backupManager): static
+    {
+        $this->backupManager = $backupManager;
+        return $this;
     }
 
     /**
