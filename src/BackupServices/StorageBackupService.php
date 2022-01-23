@@ -7,8 +7,6 @@ use IsaEken\LaravelBackup\Collectors\DirectoryCollector;
 
 class StorageBackupService extends BackupService
 {
-    public const FILENAME_FORMAT = 'Y-m-d-H-i-s.\z\i\p';
-
     protected string $name = 'storage';
 
     public string|null $storage_path = null;
@@ -42,16 +40,12 @@ class StorageBackupService extends BackupService
      */
     public function run(): void
     {
-        if ($this->getOutput()?->isVerbose()) {
-            $this->info('Collecting files...');
-        }
+        $this->info('Collecting files...', true);
 
         $collection = new DirectoryCollector($this->source_path());
         $collection->run();
 
-        if ($this->getOutput()?->isVerbose()) {
-            $this->info('Making directories...');
-        }
+        $this->info('Making directories...', true);
 
         /**
          * @var string $path
@@ -63,9 +57,7 @@ class StorageBackupService extends BackupService
             }
         }
 
-        if ($this->getOutput()?->isVerbose()) {
-            $this->info('Copying files...');
-        }
+        $this->info('Copying files...', true);
 
         /**
          * @var string $path
@@ -77,9 +69,7 @@ class StorageBackupService extends BackupService
             }
         }
 
-        if ($this->getOutput()?->isVerbose()) {
-            $this->info('Compressing...');
-        }
+        $this->info('Compressing...', true);
 
         throw_if($this->getCompressor() === null, 'RuntimeException', 'This backup is required compressor!');
 

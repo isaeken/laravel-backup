@@ -2,28 +2,25 @@
 
 namespace IsaEken\LaravelBackup\Tasks;
 
-use IsaEken\LaravelBackup\Abstracts\HasOutputWithLogger;
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
-use IsaEken\LaravelBackup\Console\Output;
 use IsaEken\LaravelBackup\Contracts\BackupService;
-use IsaEken\LaravelBackup\Traits\HasAttributes;
+use IsaEken\LaravelBackup\Contracts\BackupStorage;
+use IsaEken\LaravelBackup\Traits\HasOutput;
 
-/**
- * @method bool isBackupSource()
- * @method bool isBackupPublic()
- * @method bool isBackupStorage()
- * @method bool isBackupDatabase()
- * @method self setBackupSource(bool $value)
- * @method self setBackupPublic(bool $value)
- * @method self setBackupStorage(bool $value)
- * @method self setBackupDatabase(bool $value)
- */
-class Backup extends HasOutputWithLogger
+class Backup
 {
-    use HasAttributes;
+    use HasOutput;
 
     private array $services = [];
 
+    private array $storages = [];
+
+    /**
+     * Add a backup service.
+     *
+     * @param BackupService|string $service
+     * @return $this
+     */
     public function addBackupService(BackupService|string $service): static
     {
         if ($service instanceof BackupService) {
@@ -31,6 +28,22 @@ class Backup extends HasOutputWithLogger
         }
 
         $this->services[] = $service;
+        return $this;
+    }
+
+    /**
+     * Add a backup storage.
+     *
+     * @param BackupStorage|string $storage
+     * @return $this
+     */
+    public function addBackupStorage(BackupStorage|string $storage): static
+    {
+        if ($storage instanceof BackupStorage) {
+            $storage = $storage::class;
+        }
+
+        $this->storages[] = $storage;
         return $this;
     }
 
@@ -51,13 +64,32 @@ class Backup extends HasOutputWithLogger
 
             if ($backup->isSuccessful()) {
                 if ($backup->getOutputFile() !== null) {
-                    $backups[] = $backup->getOutputFile();
+                    $backups[] = $backup;
                 }
             }
         }
 
-        // @todo
+        $this->info('Saving backups to storages...');
 
-        $this->info('Backup completed.');
+        foreach ($backups as $backup) {
+            foreach ($this->storages as $storage) {
+                /** @var BackupStorage $storage */
+                $storage = new $storage($this);
+
+                if ($this->getOutput()?->isVerbose()) {
+                    $this->info("Saving backup '{$backup->getName()}' to storage '{$storage->getName()}'");
+                }
+
+                if ($storage->save($backup->getOutputFile(), $backup->getName())) {
+                    if ($this->getOutput()?->isVerbose()) {
+                        $this->success("Backup saved successfully.");
+                    }
+                } else {
+                    $this->error("Backup cannot be saved to storage {$backup->getName()} -> {$storage->getName()}");
+                }
+            }
+        }
+
+        $this->success('Backup completed.');
     }
 }

@@ -4,12 +4,14 @@ namespace IsaEken\LaravelBackup\BackupServices;
 
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Str;
-use IsaEken\LaravelBackup\Abstracts\HasOutputWithLogger;
 use IsaEken\LaravelBackup\Contracts\Compressor;
+use IsaEken\LaravelBackup\Traits\HasOutput;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 
-abstract class BackupService extends HasOutputWithLogger implements \IsaEken\LaravelBackup\Contracts\BackupService
+abstract class BackupService implements \IsaEken\LaravelBackup\Contracts\BackupService
 {
+    use HasOutput;
+
     protected string $name;
 
     protected string|null $outputFile = null;
@@ -17,8 +19,6 @@ abstract class BackupService extends HasOutputWithLogger implements \IsaEken\Lar
     protected bool $success = false;
 
     protected Compressor|null $compressor = null;
-
-    protected OutputStyle|null $output = null;
 
     protected TemporaryDirectory $temporaryDirectory;
 
@@ -37,7 +37,7 @@ abstract class BackupService extends HasOutputWithLogger implements \IsaEken\Lar
 
     public function __destruct()
     {
-        // $this->temporaryDirectory->delete();
+        $this->temporaryDirectory->delete();
     }
 
     /**
