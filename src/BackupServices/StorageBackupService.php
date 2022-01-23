@@ -4,6 +4,7 @@ namespace IsaEken\LaravelBackup\BackupServices;
 
 use Illuminate\Support\Facades\File;
 use IsaEken\LaravelBackup\Collectors\DirectoryCollector;
+use IsaEken\LaravelBackup\Exceptions\CompressorNotProvidedException;
 
 class StorageBackupService extends BackupService
 {
@@ -70,8 +71,7 @@ class StorageBackupService extends BackupService
         }
 
         $this->info('Compressing...', true);
-
-        throw_if($this->getCompressor() === null, 'RuntimeException', 'This backup is required compressor!');
+        throw_if($this->getCompressor() === null, CompressorNotProvidedException::class);
 
         $this
             ->getCompressor()
