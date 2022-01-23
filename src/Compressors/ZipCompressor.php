@@ -5,9 +5,9 @@ namespace IsaEken\LaravelBackup\Compressors;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Contracts\Compressor;
+use IsaEken\LaravelBackup\Exceptions\MissingExtensionException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RuntimeException;
 use ZipArchive;
 
 class ZipCompressor implements Compressor
@@ -22,10 +22,7 @@ class ZipCompressor implements Compressor
 
     public function __construct()
     {
-        if (!extension_loaded('zip')) {
-            throw new RuntimeException('The compressor is cannot be continue because zip extension is not loaded in your environment.');
-        }
-
+        throw_unless(extension_loaded('zip'), MissingExtensionException::class, 'zip');
         $this->zipArchive = new ZipArchive;
     }
 
