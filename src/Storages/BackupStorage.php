@@ -3,9 +3,8 @@
 namespace IsaEken\LaravelBackup\Storages;
 
 use IsaEken\LaravelBackup\Contracts\BackupManager;
-use IsaEken\LaravelBackup\Contracts\BackupStorage;
 
-abstract class Storage implements BackupStorage
+abstract class BackupStorage implements \IsaEken\LaravelBackup\Contracts\BackupStorage
 {
     protected string $name;
 
