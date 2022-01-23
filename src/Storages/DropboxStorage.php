@@ -48,7 +48,7 @@ class DropboxStorage implements BackupStorage
      */
     public function save(string $filepath, string $directory): bool
     {
-        $path = '/' . Str::slug(config('app.name'), '_') . '/' . Str::slug($directory, '_') . '/' . basename($filepath);
+        $path = '/' . Str::slug(config('backup.name'), '_') . '/' . Str::slug($directory, '_') . '/' . basename($filepath);
         $response = $this->getClient()->upload($path, File::get($filepath));
         return @($response['size'] === File::size($filepath));
     }
