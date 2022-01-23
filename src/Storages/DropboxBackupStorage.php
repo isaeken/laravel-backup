@@ -6,10 +6,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Contracts\BackupStorage;
 use IsaEken\LaravelBackup\Exceptions\MissingTokenException;
+use IsaEken\LaravelBackup\Storages\BackupStorage as BaseStorage;
 use Spatie\Dropbox\Client;
 
-class DropboxStorage implements BackupStorage
+class DropboxBackupStorage extends BaseStorage implements BackupStorage
 {
+    protected string $name = 'dropbox';
+
     public string|null $token = null;
 
     private Client|null $client = null;
@@ -33,14 +36,6 @@ class DropboxStorage implements BackupStorage
         }
 
         return $this->client;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getName(): string
-    {
-        return 'dropbox';
     }
 
     /**

@@ -5,18 +5,13 @@ namespace IsaEken\LaravelBackup\Storages;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Contracts\BackupStorage;
+use IsaEken\LaravelBackup\Storages\BackupStorage as BaseStorage;
 
-class FakeStorage implements BackupStorage
+class FakeBackupStorage extends BaseStorage implements BackupStorage
 {
     private static array $filesystem = [];
 
-    /**
-     * @inheritDoc
-     */
-    public function getName(): string
-    {
-        return 'fake-storage';
-    }
+    protected string $name = 'fake-storage';
 
     /**
      * @inheritDoc
