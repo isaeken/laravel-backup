@@ -3,11 +3,12 @@
 namespace IsaEken\LaravelBackup;
 
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
+use IsaEken\LaravelBackup\Contracts\BackupManager;
 use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Contracts\BackupStorage;
 use IsaEken\LaravelBackup\Traits\HasOutput;
 
-class Backup
+class Backup implements BackupManager
 {
     use HasOutput;
 
@@ -16,10 +17,7 @@ class Backup
     private array $storages = [];
 
     /**
-     * Add a backup service.
-     *
-     * @param BackupService|string $service
-     * @return $this
+     * @inheritDoc
      */
     public function addBackupService(BackupService|string $service): static
     {
@@ -32,10 +30,7 @@ class Backup
     }
 
     /**
-     * Add a backup storage.
-     *
-     * @param BackupStorage|string $storage
-     * @return $this
+     * @inheritDoc
      */
     public function addBackupStorage(BackupStorage|string $storage): static
     {
@@ -47,6 +42,9 @@ class Backup
         return $this;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function run(): void
     {
         $this->info('Backup is started...');
