@@ -10,8 +10,8 @@ class BackupServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('laravel-backup');
-//            ->hasConfigFile()
+            ->name('laravel-backup')
+            ->hasConfigFile();
 //            ->hasTranslations()
 //            ->hasCommands([
 //
