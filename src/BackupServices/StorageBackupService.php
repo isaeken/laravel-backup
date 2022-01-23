@@ -3,10 +3,12 @@
 namespace IsaEken\LaravelBackup\BackupServices;
 
 use Illuminate\Support\Facades\File;
+use IsaEken\LaravelBackup\BackupServices\BackupService as BaseBackupService;
 use IsaEken\LaravelBackup\Collectors\DirectoryCollector;
+use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Exceptions\CompressorNotProvidedException;
 
-class StorageBackupService extends BackupService
+class StorageBackupService extends BaseBackupService implements BackupService
 {
     protected string $name = 'storage';
 
