@@ -2,20 +2,18 @@
 
 namespace IsaEken\LaravelBackup\Collectors;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use IsaEken\LaravelBackup\Collectors\Collector as BaseCollector;
 use IsaEken\LaravelBackup\Contracts\Collector;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class DirectoryCollector implements Collector
+class DirectoryCollector extends BaseCollector implements Collector
 {
     public const LIBRARY_ROOTS = [
         'vendor',
         'node_modules',
     ];
-
-    private array $items = [];
 
     /**
      * @param string $directory
@@ -72,21 +70,5 @@ class DirectoryCollector implements Collector
 
         $this->items = $items;
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function toArray(): array
-    {
-        return $this->items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function collect(): Collection
-    {
-        return collect($this->toArray());
     }
 }
