@@ -52,6 +52,8 @@ class ZipCompressor extends BaseCompressor implements Compressor
      */
     public function run(): bool
     {
+        $this->setPassword($this->getBackupService()->getBackupManager()?->getPassword() ?? '');
+
         throw_unless(is_dir($this->source), FileNotFoundException::class, $this->source);
 
         if (!$this->zipArchive->open($this->destination, ZipArchive::CREATE)) {
@@ -72,14 +74,18 @@ class ZipCompressor extends BaseCompressor implements Compressor
                     $this->zipArchive->addEmptyDir($this->zippedPath($file));
                 } elseif (is_file($file) === true) {
                     $this->zipArchive->addFromString($this->zippedPath($file), file_get_contents($file));
+
+                    if (mb_strlen($this->password) > 0) {
+                        $this->zipArchive->setEncryptionName($this->zippedPath($file), ZipArchive::EM_AES_256, $this->password);
+                    }
                 }
             }
         } elseif (is_file($source) === true) {
             $this->zipArchive->addFromString(basename($source), file_get_contents($source));
-        }
 
-        if (mb_strlen($this->password) > 0) {
-            $this->zipArchive->setPassword($this->password);
+            if (mb_strlen($this->password) > 0) {
+                $this->zipArchive->setEncryptionName(basename($source), ZipArchive::EM_AES_256, $this->password);
+            }
         }
 
         return $this->zipArchive->close();

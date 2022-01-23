@@ -12,9 +12,33 @@ class Backup implements BackupManager
 {
     use HasOutput;
 
+    private string $password = '';
+
     private array $services = [];
 
     private array $storages = [];
+
+    /**
+     * Get backup encryption password.
+     *
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * Set backup encryption password.
+     *
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
 
     /**
      * @inheritDoc
