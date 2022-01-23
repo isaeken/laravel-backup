@@ -18,7 +18,7 @@ class StorageBackupService extends BaseBackupService implements BackupService
     private function source_path(string|null $path = null): false|string
     {
         if ($path !== null) {
-            return realpath($this->storage_path . DIRECTORY_SEPARATOR . trim($path));
+            return $this->storage_path . DIRECTORY_SEPARATOR . trim($path);
         }
 
         return $this->storage_path;
