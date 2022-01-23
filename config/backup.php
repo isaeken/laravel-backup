@@ -54,13 +54,6 @@ return [
          */
 
         'password' => null,
-
-
-        /*
-         * Backup encryption algorithm
-         */
-
-        'encryption' => null,
     ],
 
     /*
