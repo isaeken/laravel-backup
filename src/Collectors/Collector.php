@@ -8,6 +8,12 @@ abstract class Collector implements \IsaEken\LaravelBackup\Contracts\Collector
 {
     private array $items = [];
 
+    public function setItems(array $items): static
+    {
+        $this->items = $items;
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
