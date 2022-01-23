@@ -5,6 +5,21 @@ namespace IsaEken\LaravelBackup\Contracts;
 interface Compressor
 {
     /**
+     * Get the service instance.
+     *
+     * @return BackupService
+     */
+    public function getBackupService(): BackupService;
+
+    /**
+     * Set the service instance.
+     *
+     * @param BackupService $service
+     * @return $this
+     */
+    public function setBackupService(BackupService $service): static;
+
+    /**
      * Get source.
      *
      * @return string

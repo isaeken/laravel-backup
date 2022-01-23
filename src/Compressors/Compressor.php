@@ -2,11 +2,35 @@
 
 namespace IsaEken\LaravelBackup\Compressors;
 
+use IsaEken\LaravelBackup\Contracts\BackupService;
+
 abstract class Compressor implements \IsaEken\LaravelBackup\Contracts\Compressor
 {
     protected string $source;
 
     protected string $destination;
+
+    public function __construct(public BackupService $service)
+    {
+        // ...
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBackupService(): BackupService
+    {
+        return $this->service;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setBackupService(BackupService $service): static
+    {
+        $this->service = $service;
+        return $this;
+    }
 
     /**
      * @inheritDoc
