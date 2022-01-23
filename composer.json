@@ -1,0 +1,67 @@
+{
+    "name": "isaeken/laravel-backup",
+    "type": "library",
+    "version": "v1.x-dev",
+    "description": "Automatic backups for your Laravel application",
+    "keywords": [
+        "laravel",
+        "automatic",
+        "backup",
+        "cloud"
+    ],
+    "readme": "README.md",
+    "homepage": "https://github.com/isaeken/laravel-backup",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "İsa Eken",
+            "email": "hello@isaeken.com.tr",
+            "homepage": "https://www.isaeken.com.tr",
+            "role": "Founder"
+        }
+    ],
+    "support": {
+        "email": "hello@isaeken.com.tr",
+        "issues": "https://github.com/isaeken/laravel-backup/issues",
+        "docs": "https://github.com/isaeken/laravel-backup/wiki",
+        "source": "https://github.com/isaeken/laravel-backup",
+        "wiki": "https://github.com/isaeken/laravel-backup/wiki"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/isaeken"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^8.80",
+        "laravel/framework": "^8.80",
+        "spatie/laravel-package-tools": "^1.11.0",
+        "spatie/temporary-directory": "^2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "IsaEken\\LaravelBackup\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IsaEken\\LaravelBackup\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
+    },
+    "suggest": {
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
