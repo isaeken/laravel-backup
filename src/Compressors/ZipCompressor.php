@@ -4,21 +4,23 @@ namespace IsaEken\LaravelBackup\Compressors;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
+use IsaEken\LaravelBackup\Compressors\Compressor as BaseCompressor;
 use IsaEken\LaravelBackup\Contracts\Compressor;
 use IsaEken\LaravelBackup\Exceptions\MissingExtensionException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
 
-class ZipCompressor implements Compressor
+class ZipCompressor extends BaseCompressor implements Compressor
 {
     public const FILENAME_FORMAT = 'Y-m-d-H-i-s.\z\i\p';
 
     protected ZipArchive $zipArchive;
 
-    protected string $source;
-
-    protected string $destination;
+    private function zippedPath(string $path): string
+    {
+        return Str::of($path)->after($this->getSource() . DIRECTORY_SEPARATOR);
+    }
 
     public function __construct()
     {
@@ -29,40 +31,10 @@ class ZipCompressor implements Compressor
     /**
      * @inheritDoc
      */
-    public function getSource(): string
-    {
-        return $this->source;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDestination(): string
-    {
-        return $this->destination;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setSource(string $source): static
-    {
-        $this->source = $source;
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function setDestination(string $destination): static
     {
         $this->destination = $destination . DIRECTORY_SEPARATOR . now()->format(static::FILENAME_FORMAT);
         return $this;
-    }
-
-    private function zippedPath(string $path): string
-    {
-        return Str::of($path)->after($this->getSource() . DIRECTORY_SEPARATOR);
     }
 
     /**
