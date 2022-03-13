@@ -10,26 +10,20 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class DirectoryCollector extends BaseCollector implements Collector
 {
-    public const LIBRARY_ROOTS = [
-        'vendor',
-        'node_modules',
-    ];
-
     /**
-     * @param string $directory
-     * @param bool $ignoreLibraryRoots
-     * @param bool $ignoreDotFiles
-     * @param bool $followSymlinks
-     * @param bool $ignoreVcs
+     * @param  string  $directory
+     * @param  bool  $ignoreLibraryRoots
+     * @param  bool  $ignoreDotFiles
+     * @param  bool  $followSymlinks
+     * @param  bool  $ignoreVcs
      */
     public function __construct(
         public string $directory,
-        public bool   $ignoreLibraryRoots = true,
-        public bool   $ignoreDotFiles = false,
-        public bool   $followSymlinks = false,
-        public bool   $ignoreVcs = false,
-    )
-    {
+        public bool $ignoreLibraryRoots = true,
+        public bool $ignoreDotFiles = false,
+        public bool $followSymlinks = false,
+        public bool $ignoreVcs = false,
+    ) {
         // ...
     }
 
@@ -45,7 +39,10 @@ class DirectoryCollector extends BaseCollector implements Collector
             ->ignoreVCSIgnored($this->ignoreVcs);
 
         if ($this->ignoreLibraryRoots) {
-            $finder->exclude(static::LIBRARY_ROOTS);
+            $finder->exclude(config('backup.library_roots', [
+                'node_modules',
+                'vendor',
+            ]));
         }
 
         $iterator = iterator_to_array($finder);
