@@ -2,20 +2,11 @@
 
 use IsaEken\LaravelBackup\BackupServices;
 
-// @todo
 return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application name for backup categories
-    |--------------------------------------------------------------------------
-    */
-
-    'name' => env('APP_NAME', 'Laravel'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Backup configuration
+    | Services (eg: database, storage, image etc...)
     |--------------------------------------------------------------------------
     */
 
@@ -24,74 +15,33 @@ return [
         BackupServices\StorageBackupService::class,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Storages (eg: google drive, local, s3 etc...)
+    |--------------------------------------------------------------------------
+    */
+
     'storages' => [
         'local',
     ],
 
-    'backup' => [
-
-        /*
-         * Backup services (eg: database service, storage service etc...)
-         */
-
-        'services' => [
-            StorageBackupService::class,
-        ],
-
-
-        /*
-         * Backup storages (eg: google drive, local storage etc...)
-         */
-
-        'storages' => [
-            FakeBackupStorage::class,
-        ],
-
-
-        /*
-         * Backup notification channels (eg: email, slack, discord etc...)
-         */
-
-        'notifications' => [
-            // ...
-        ],
-
-
-        /*
-         * Backup encryption password
-         */
-
-        'password' => null,
-    ],
-
     /*
     |--------------------------------------------------------------------------
-    | Backup clean configuration
-    |--------------------------------------------------------------------------
-    */
-
-    'cleanup' => [
-
-        /*
-         * Clean storages
-         */
-
-        'storages' => [
-            FakeBackupStorage::class,
-        ],
-
-        // ...
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Backup notification service configurations
+    | Notification Channels (eg: email, slack, discord etc...)
     |--------------------------------------------------------------------------
     */
 
     'notifications' => [
         // ...
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Encryption Password
+    |--------------------------------------------------------------------------
+    */
+
+    'password' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -103,13 +53,5 @@ return [
         'node_modules',
         'vendor',
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Temporary directory path for backup generate. (null for system temp dir.)
-    |--------------------------------------------------------------------------
-    */
-
-    'temporary_directory' => null,
 
 ];
