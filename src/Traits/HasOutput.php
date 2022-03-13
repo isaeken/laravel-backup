@@ -9,23 +9,15 @@ trait HasOutput
 {
     private OutputStyle|null $output = null;
 
-    private function formatToLogMessage(string $message): string
+    private function log(string $method, string $message)
     {
-        $now = now()->toDateTimeString();
-        return "[$now] $message";
-    }
+        Log::$method($message);
 
-    private function canWriteToOutput(bool $verbose = false): bool
-    {
         if ($this->getOutput() === null) {
-            return false;
+            return;
         }
 
-        if ($verbose === false) {
-            return true;
-        }
-
-        return $this->getOutput()->isVerbose();
+        $this->getOutput()->$method($message);
     }
 
     public function getOutput(): OutputStyle|null
@@ -39,39 +31,21 @@ trait HasOutput
         return $this;
     }
 
-    public function info(string $message, bool $verbose = false): static
+    public function info(string $message): static
     {
-        $message = $this->formatToLogMessage($message);
-        Log::info($message);
-
-        if ($this->canWriteToOutput($verbose)) {
-            $this->getOutput()->info($message);
-        }
-
+        $this->log('info', $message);
         return $this;
     }
 
     public function success(string $message): static
     {
-        $message = $this->formatToLogMessage($message);
-        Log::info($message);
-
-        if ($this->canWriteToOutput()) {
-            $this->getOutput()->info($message);
-        }
-
+        $this->log('success', $message);
         return $this;
     }
 
     public function error(string $message): static
     {
-        $message = $this->formatToLogMessage($message);
-        Log::error($message);
-
-        if ($this->canWriteToOutput()) {
-            $this->getOutput()->error($message);
-        }
-
+        $this->log('error', $message);
         return $this;
     }
 }

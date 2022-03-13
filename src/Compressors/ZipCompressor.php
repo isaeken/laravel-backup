@@ -4,32 +4,63 @@ namespace IsaEken\LaravelBackup\Compressors;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
-use IsaEken\LaravelBackup\Compressors\Compressor as BaseCompressor;
-use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Contracts\Compressor;
+use IsaEken\LaravelBackup\Contracts\HasPassword;
 use IsaEken\LaravelBackup\Exceptions\MissingExtensionException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
 
-class ZipCompressor extends BaseCompressor implements Compressor
+class ZipCompressor implements Compressor, HasPassword
 {
     public const FILENAME_FORMAT = 'Y-m-d-H-i-s.\z\i\p';
 
     protected ZipArchive $zipArchive;
 
-    public string $password = '';
+    private string $password = '';
+
+    private string $source = '';
+
+    private string $destination = '';
 
     private function zippedPath(string $path): string
     {
-        return Str::of($path)->after($this->getSource() . DIRECTORY_SEPARATOR);
+        $source = Str::of($this->getSource().DIRECTORY_SEPARATOR);
+        $source = $source->replace('\\', DIRECTORY_SEPARATOR);
+        $source = $source->replace('/', DIRECTORY_SEPARATOR);
+
+        return Str::after($path, $source);
     }
 
-    public function __construct(public BackupService $service)
+    public function __construct()
     {
-        parent::__construct($this->service);
         throw_unless(extension_loaded('zip'), MissingExtensionException::class, 'zip');
-        $this->zipArchive = new ZipArchive;
+        $this->zipArchive = new ZipArchive();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSource(): string
+    {
+        return $this->source;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setSource(string $source): static
+    {
+        $this->source = $source;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDestination(): string
+    {
+        return $this->destination;
     }
 
     /**
@@ -37,10 +68,21 @@ class ZipCompressor extends BaseCompressor implements Compressor
      */
     public function setDestination(string $destination): static
     {
-        $this->destination = $destination . DIRECTORY_SEPARATOR . now()->format(static::FILENAME_FORMAT);
+        $this->destination = $destination.DIRECTORY_SEPARATOR.now()->format(static::FILENAME_FORMAT);
         return $this;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function setPassword(string $password): static
     {
         $this->password = $password;
@@ -52,8 +94,6 @@ class ZipCompressor extends BaseCompressor implements Compressor
      */
     public function run(): bool
     {
-        $this->setPassword($this->getBackupService()->getBackupManager()?->getPassword() ?? '');
-
         throw_unless(is_dir($this->source), FileNotFoundException::class, $this->source);
 
         if (!$this->zipArchive->open($this->destination, ZipArchive::CREATE)) {
@@ -61,8 +101,12 @@ class ZipCompressor extends BaseCompressor implements Compressor
         }
 
         $source = realpath($this->source);
+
         if (is_dir($source) === true) {
-            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($source),
+                RecursiveIteratorIterator::SELF_FIRST
+            );
 
             foreach ($files as $file) {
                 if (in_array(substr($file, strrpos($file, DIRECTORY_SEPARATOR) + 1), ['.', '..'])) {
@@ -76,7 +120,11 @@ class ZipCompressor extends BaseCompressor implements Compressor
                     $this->zipArchive->addFromString($this->zippedPath($file), file_get_contents($file));
 
                     if (mb_strlen($this->password) > 0) {
-                        $this->zipArchive->setEncryptionName($this->zippedPath($file), ZipArchive::EM_AES_256, $this->password);
+                        $this->zipArchive->setEncryptionName(
+                            $this->zippedPath($file),
+                            ZipArchive::EM_AES_256,
+                            $this->password
+                        );
                     }
                 }
             }
@@ -84,7 +132,11 @@ class ZipCompressor extends BaseCompressor implements Compressor
             $this->zipArchive->addFromString(basename($source), file_get_contents($source));
 
             if (mb_strlen($this->password) > 0) {
-                $this->zipArchive->setEncryptionName(basename($source), ZipArchive::EM_AES_256, $this->password);
+                $this->zipArchive->setEncryptionName(
+                    basename($source),
+                    ZipArchive::EM_AES_256,
+                    $this->password
+                );
             }
         }
 

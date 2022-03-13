@@ -40,17 +40,19 @@ class DatabaseBackupService extends BaseBackupService implements \IsaEken\Larave
     {
         $databasePath = $this->getConnection()['database'];
         $databaseName = Str::beforeLast(basename($databasePath), '.');
-        @File::copy($databasePath, $backupFile = $this->temporaryDirectory->path($databaseName . '.sqlite'));
+        $filename = $databaseName.'_'.now()->format('Y-m-d-H-i-s').'.sqlite';
+        $filepath = $this->temporaryDirectory->path($filename);
+        @File::copy($databasePath, $filepath);
 
         $this
             ->getCompressor()
-            ->setSource($backupFile)
-            ->setDestination($this->temporaryDirectory->path(now()->format('Y-m-d-H-i-s') . '.sqlite'));
+            ->setSource($databasePath)
+            ->setDestination($filepath);
 
         if ($this->getCompressor()->run()) {
             $this->outputFile = $this->getCompressor()->getDestination();
             $this->success = true;
-            $this->success('Backup generated: ' . $this->outputFile);
+            $this->success('Backup generated: '.$this->outputFile);
         } else {
             $this->error('Compression failed!');
         }

@@ -2,10 +2,12 @@
 
 namespace IsaEken\LaravelBackup;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
 use IsaEken\LaravelBackup\Contracts\BackupManager;
 use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Contracts\BackupStorage;
+use IsaEken\LaravelBackup\Contracts\Compressor;
 use IsaEken\LaravelBackup\Traits\HasOutput;
 
 class Backup implements BackupManager
@@ -31,7 +33,7 @@ class Backup implements BackupManager
     /**
      * Set backup encryption password.
      *
-     * @param string $password
+     * @param  string  $password
      * @return $this
      */
     public function setPassword(string $password): static
@@ -43,12 +45,16 @@ class Backup implements BackupManager
     /**
      * @inheritDoc
      */
-    public function addBackupService(BackupService|string $service): static
+    public function setCompressor(Compressor $compressor): static
     {
-        if ($service instanceof BackupService) {
-            $service = $service::class;
-        }
+        // TODO: Implement setCompressor() method.
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function addBackupService(BackupService $service): static
+    {
         $this->services[] = $service;
         return $this;
     }
@@ -56,13 +62,9 @@ class Backup implements BackupManager
     /**
      * @inheritDoc
      */
-    public function addBackupStorage(BackupStorage|string $storage): static
+    public function addBackupStorage(Filesystem $filesystem): static
     {
-        if ($storage instanceof BackupStorage) {
-            $storage = $storage::class;
-        }
-
-        $this->storages[] = $storage;
+        $this->storages[] = $filesystem;
         return $this;
     }
 
@@ -79,7 +81,7 @@ class Backup implements BackupManager
             $backup = new $service($this);
 
             if ($this->getOutput()?->isVerbose()) {
-                $this->info('Running backup service: ' . $backup->getName());
+                $this->info('Running backup service: '.$backup->getName());
             }
 
             $backup->setCompressor(ZipCompressor::class)->run();

@@ -32,7 +32,7 @@ abstract class BackupService implements \IsaEken\LaravelBackup\Contracts\BackupS
         }
 
         $this->temporaryDirectory = (new TemporaryDirectory())
-            ->name(Str::slug('backup-' . config('backup.name') . '-' . $this->getName(), '_'))
+            ->name(Str::slug('backup-'.config('backup.name').'-'.$this->getName(), '_'))
             ->force()
             ->create()
             ->empty();
@@ -40,7 +40,7 @@ abstract class BackupService implements \IsaEken\LaravelBackup\Contracts\BackupS
 
     public function __destruct()
     {
-        $this->temporaryDirectory->delete();
+        // $this->temporaryDirectory->delete();
     }
 
     /**

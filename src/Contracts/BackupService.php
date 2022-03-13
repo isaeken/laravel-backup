@@ -12,36 +12,6 @@ interface BackupService
     public function getName(): string;
 
     /**
-     * Get the backup manager.
-     *
-     * @return BackupManager
-     */
-    public function getBackupManager(): BackupManager;
-
-    /**
-     * Set the backup manager.
-     *
-     * @param BackupManager $backupManager
-     * @return $this
-     */
-    public function setBackupManager(BackupManager $backupManager): static;
-
-    /**
-     * Get the backup compressor.
-     *
-     * @return Compressor|null
-     */
-    public function getCompressor(): Compressor|null;
-
-    /**
-     * Set the backup compressor engine.
-     *
-     * @param Compressor|string $compressor
-     * @return $this
-     */
-    public function setCompressor(Compressor|string $compressor): static;
-
-    /**
      * Check if backup is successfully generated.
      *
      * @return bool
