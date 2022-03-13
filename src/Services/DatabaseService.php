@@ -52,6 +52,12 @@ class DatabaseService extends Service implements Contracts\Backup\Service, Contr
         $databaseName = Str::of(basename($databasePath))->beforeLast('.')->slug('')->value();
         $filename = $databaseName.'_'.now()->format('Y-m-d-H-i-s').'.sqlite';
         $filepath = $this->getTemporaryDirectory('sqlite')->path($filename);
+
+        if ($databaseName == 'memory') {
+            $this->error('Unsupported database driver: '.$databaseName);
+            return;
+        }
+
         @File::copy($databasePath, $filepath);
 
         $this
