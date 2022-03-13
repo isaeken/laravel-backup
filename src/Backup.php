@@ -31,7 +31,7 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
         foreach ($this->getBackupServices() as $service) {
             $this->debug('Running backup service: '.$service->getName());
 
-            if ($service instanceof HasLogger) {
+            if ($service instanceof HasLogger && $this->getOutput() !== null) {
                 $this->debug('Setting service logger: '.$this->getOutput()::class);
                 $service->setOutput($this->getOutput());
             }
