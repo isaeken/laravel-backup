@@ -4,10 +4,14 @@ namespace IsaEken\LaravelBackup\BackupServices;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use IsaEken\LaravelBackup\BackupServices\BackupService as BaseBackupService;
+use IsaEken\LaravelBackup\Contracts;
+use IsaEken\LaravelBackup\Traits;
 
-class DatabaseBackupService extends BaseBackupService implements \IsaEken\LaravelBackup\Contracts\BackupService
+class DatabaseBackupService extends BackupService implements Contracts\BackupService, Contracts\HasLogger, Contracts\UsesTemporaryDirectory
 {
+    use Traits\HasLogger;
+    use Traits\UsesTemporaryDirectory;
+
     protected string $name = 'database';
 
     public string|null $connection = null;
@@ -32,29 +36,26 @@ class DatabaseBackupService extends BaseBackupService implements \IsaEken\Larave
         $driver = $this->getConnection()['driver'];
 
         if ($driver === 'sqlite') {
+            $this->debug('Backup in progress for database with "sqlite" driver...');
             $this->sqlite();
+        } else {
+            $this->error('Unsupported database driver.');
         }
     }
 
     private function sqlite(): void
     {
+        $this->makeTemporaryDirectory('sqlite');
         $databasePath = $this->getConnection()['database'];
         $databaseName = Str::beforeLast(basename($databasePath), '.');
         $filename = $databaseName.'_'.now()->format('Y-m-d-H-i-s').'.sqlite';
-        $filepath = $this->temporaryDirectory->path($filename);
+        $filepath = $this->getTemporaryDirectory('sqlite')->path($filename);
         @File::copy($databasePath, $filepath);
 
         $this
-            ->getCompressor()
-            ->setSource($databasePath)
-            ->setDestination($filepath);
+            ->setOutputFile($filepath)
+            ->setSuccessStatus(true);
 
-        if ($this->getCompressor()->run()) {
-            $this->outputFile = $this->getCompressor()->getDestination();
-            $this->success = true;
-            $this->success('Backup generated: '.$this->outputFile);
-        } else {
-            $this->error('Compression failed!');
-        }
+        $this->success('Backup generated: '.$this->getOutputFile());
     }
 }

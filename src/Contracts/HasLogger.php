@@ -2,8 +2,25 @@
 
 namespace IsaEken\LaravelBackup\Contracts;
 
+use Illuminate\Console\OutputStyle;
+
 interface HasLogger
 {
+    /**
+     * Get the output.
+     *
+     * @return OutputStyle|null
+     */
+    public function getOutput(): OutputStyle|null;
+
+    /**
+     * Set the output.
+     *
+     * @param  OutputStyle  $output
+     * @return $this
+     */
+    public function setOutput(OutputStyle $output): static;
+
     /**
      * Log a debug message.
      *

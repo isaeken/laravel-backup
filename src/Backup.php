@@ -2,7 +2,7 @@
 
 namespace IsaEken\LaravelBackup;
 
-use IsaEken\LaravelBackup\Compressors\ZipCompressor;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use IsaEken\LaravelBackup\Contracts\BackupManager;
 use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Contracts\HasBackupServices;
@@ -27,40 +27,52 @@ class Backup implements BackupManager, HasLogger, HasBackupServices, HasCompress
         $this->info('Backup is started...');
         $backups = [];
 
-        foreach ($this->services as $service) {
-            /** @var BackupService $backup */
-            $backup = new $service($this);
+        /** @var BackupService $service */
+        foreach ($this->getBackupServices() as $service) {
+            $this->debug('Running backup service: '.$service->getName());
 
-            if ($this->getOutput()?->isVerbose()) {
-                $this->info('Running backup service: '.$backup->getName());
+            if ($service instanceof HasLogger) {
+                $this->debug('Setting service logger: '.$this->getOutput()::class);
+                $service->setOutput($this->getOutput());
             }
 
-            $backup->setCompressor(ZipCompressor::class)->run();
+            if ($service instanceof HasCompressor) {
+                $this->debug('Setting service compressor: '.$this->getCompressor()::class);
+                $service->setCompressor($this->getCompressor());
+            }
 
-            if ($backup->isSuccessful()) {
-                if ($backup->getOutputFile() !== null) {
-                    $backups[] = $backup;
+            if ($service instanceof HasPassword) {
+                $this->debug('Setting service password: '.$this->getPassword());
+                $service->setPassword($this->getPassword());
+            }
+
+            $this->debug('Backup generating...');
+            $service->run();
+
+            if ($service->isSuccessful()) {
+                $this->debug('Backup generated.');
+
+                if ($service->getOutputFile() !== null) {
+                    $this->debug('Output file: '.$service->getOutputFile());
+                    $backups[] = $service;
                 }
+            } else {
+                $this->error('Backup is cannot be created!');
             }
         }
 
         $this->info('Saving backups to storages...');
 
         foreach ($backups as $backup) {
-            foreach ($this->storages as $storage) {
-                /** @var BackupStorage $storage */
-                $storage = new $storage($this);
+            /** @var Filesystem $storage */
+            foreach ($this->getBackupStorages() as $storage) {
+                $storageClass = $storage::class;
 
-                if ($this->getOutput()?->isVerbose()) {
-                    $this->info("Saving backup '{$backup->getName()}' to storage '{$storage->getName()}'");
-                }
-
-                if ($storage->save($backup->getOutputFile(), $backup->getName())) {
-                    if ($this->getOutput()?->isVerbose()) {
-                        $this->success("Backup saved successfully.");
-                    }
+                $this->info("Saving backup '{$backup->getName()}' with using driver: '$storageClass'");
+                if ($storage->put(basename($backup->getOutputFile()), file_get_contents($backup->getOutputFile()))) {
+                    $this->debug('Backup saved successfully.');
                 } else {
-                    $this->error("Backup cannot be saved to storage {$backup->getName()} -> {$storage->getName()}");
+                    $this->error('Backup cannot be saved with using driver: '.$storageClass);
                 }
             }
         }

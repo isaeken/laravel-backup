@@ -18,7 +18,7 @@ class StorageBackupService extends BaseBackupService implements BackupService
     private function source_path(string|null $path = null): false|string
     {
         if ($path !== null) {
-            return $this->storage_path . DIRECTORY_SEPARATOR . trim($path);
+            return $this->storage_path.DIRECTORY_SEPARATOR.trim($path);
         }
 
         return $this->storage_path;
@@ -27,7 +27,7 @@ class StorageBackupService extends BaseBackupService implements BackupService
     private function temporary_path(string|null $path = null): string
     {
         if ($path !== null) {
-            return $this->temporaryDirectory->path('backup') . DIRECTORY_SEPARATOR . trim($path);
+            return $this->temporaryDirectory->path('backup').DIRECTORY_SEPARATOR.trim($path);
         }
 
         return $this->temporaryDirectory->path('backup');
@@ -84,7 +84,7 @@ class StorageBackupService extends BaseBackupService implements BackupService
         if ($this->getCompressor()->run()) {
             $this->outputFile = $this->getCompressor()->getDestination();
             $this->success = true;
-            $this->success('Backup generated: ' . $this->outputFile);
+            $this->success('Backup generated: '.$this->outputFile);
         } else {
             $this->error('Compression failed!');
         }

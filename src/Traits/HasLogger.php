@@ -2,7 +2,6 @@
 
 namespace IsaEken\LaravelBackup\Traits;
 
-use Exception;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Log;
 
@@ -12,22 +11,42 @@ trait HasLogger
 
     private function logMessage(string $method, string $message): static
     {
-        try {
-            Log::$method($message);
-        } catch (Exception $exception) {
-            // ...
-        }
+        if ($method === 'debug') {
+            Log::debug($message);
 
-        $this->getOutput()?->$method($message);
+            if ($this->getOutput()?->isVerbose()) {
+                $this->getOutput()->writeln($message);
+            }
+        } elseif ($method === 'info') {
+            Log::info($message);
+            $this->getOutput()?->info($message);
+        } elseif ($method === 'success') {
+            Log::info($message);
+            $this->getOutput()?->success($message);
+        } elseif ($method === 'error') {
+            Log::error($message);
+            $this->getOutput()?->error($message);
+        }
 
         return $this;
     }
 
+    /**
+     * Get the output.
+     *
+     * @return OutputStyle|null
+     */
     public function getOutput(): OutputStyle|null
     {
         return $this->output;
     }
 
+    /**
+     * Set the output.
+     *
+     * @param  OutputStyle  $output
+     * @return $this
+     */
     public function setOutput(OutputStyle $output): static
     {
         $this->output = $output;
