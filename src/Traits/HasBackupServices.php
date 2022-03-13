@@ -2,7 +2,7 @@
 
 namespace IsaEken\LaravelBackup\Traits;
 
-use IsaEken\LaravelBackup\Contracts\BackupService;
+use IsaEken\LaravelBackup\Contracts\Backup\Service;
 
 trait HasBackupServices
 {
@@ -11,10 +11,10 @@ trait HasBackupServices
     /**
      * Add a backup service.
      *
-     * @param  BackupService  $service
+     * @param  Service  $service
      * @return $this
      */
-    public function addBackupService(BackupService $service): static
+    public function addBackupService(Service $service): static
     {
         $this->backupServices[] = $service;
         return $this;

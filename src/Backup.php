@@ -3,14 +3,14 @@
 namespace IsaEken\LaravelBackup;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
-use IsaEken\LaravelBackup\Contracts\BackupManager;
-use IsaEken\LaravelBackup\Contracts\BackupService;
+use IsaEken\LaravelBackup\Contracts\Backup\Manager;
+use IsaEken\LaravelBackup\Contracts\Backup\Service;
 use IsaEken\LaravelBackup\Contracts\HasBackupServices;
 use IsaEken\LaravelBackup\Contracts\HasBackupStorages;
 use IsaEken\LaravelBackup\Contracts\HasLogger;
 use IsaEken\LaravelBackup\Contracts\HasPassword;
 
-class Backup implements BackupManager, HasLogger, HasBackupServices, HasBackupStorages, HasPassword
+class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages, HasPassword
 {
     use Traits\HasBackupServices;
     use Traits\HasBackupStorages;
@@ -25,7 +25,7 @@ class Backup implements BackupManager, HasLogger, HasBackupServices, HasBackupSt
         $this->info('Backup is started...');
         $backups = [];
 
-        /** @var BackupService $service */
+        /** @var Service $service */
         foreach ($this->getBackupServices() as $service) {
             $this->debug('Running backup service: '.$service->getName());
 

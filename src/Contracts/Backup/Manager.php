@@ -1,8 +1,8 @@
 <?php
 
-namespace IsaEken\LaravelBackup\Contracts;
+namespace IsaEken\LaravelBackup\Contracts\Backup;
 
-interface BackupManager
+interface Manager
 {
     /**
      * Run the backup services.

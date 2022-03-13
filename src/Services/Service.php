@@ -1,8 +1,10 @@
 <?php
 
-namespace IsaEken\LaravelBackup\BackupServices;
+namespace IsaEken\LaravelBackup\Services;
 
-abstract class BackupService implements \IsaEken\LaravelBackup\Contracts\BackupService
+use IsaEken\LaravelBackup\Contracts;
+
+abstract class Service implements Contracts\Backup\Service
 {
     protected string $name;
 

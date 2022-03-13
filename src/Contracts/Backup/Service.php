@@ -1,8 +1,8 @@
 <?php
 
-namespace IsaEken\LaravelBackup\Contracts;
+namespace IsaEken\LaravelBackup\Contracts\Backup;
 
-interface BackupService
+interface Service
 {
     /**
      * Get the backup provider name.

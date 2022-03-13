@@ -1,6 +1,6 @@
 <?php
 
-namespace IsaEken\LaravelBackup\BackupServices;
+namespace IsaEken\LaravelBackup\Services;
 
 use Illuminate\Support\Facades\File;
 use IsaEken\LaravelBackup\Collectors\DirectoryCollector;
@@ -8,7 +8,7 @@ use IsaEken\LaravelBackup\Compressors\ZipCompressor;
 use IsaEken\LaravelBackup\Contracts;
 use IsaEken\LaravelBackup\Traits;
 
-class StorageBackupService extends BackupService implements Contracts\BackupService, Contracts\HasLogger, Contracts\HasCompressor, Contracts\HasPassword, Contracts\UsesTemporaryDirectory
+class StorageService extends Service implements Contracts\Backup\Service, Contracts\HasLogger, Contracts\HasCompressor, Contracts\HasPassword, Contracts\UsesTemporaryDirectory
 {
     use Traits\HasLogger;
     use Traits\HasCompressor;

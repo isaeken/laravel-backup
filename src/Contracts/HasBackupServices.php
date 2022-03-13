@@ -2,15 +2,17 @@
 
 namespace IsaEken\LaravelBackup\Contracts;
 
+use IsaEken\LaravelBackup\Contracts\Backup\Service;
+
 interface HasBackupServices
 {
     /**
      * Add a backup service.
      *
-     * @param  BackupService  $service
+     * @param  Service  $service
      * @return $this
      */
-    public function addBackupService(BackupService $service): static;
+    public function addBackupService(Service $service): static;
 
     /**
      * Get all backup services.

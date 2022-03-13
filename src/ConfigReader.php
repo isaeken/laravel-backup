@@ -4,13 +4,13 @@ namespace IsaEken\LaravelBackup;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
-use IsaEken\LaravelBackup\Contracts\BackupService;
+use IsaEken\LaravelBackup\Contracts\Backup\Service;
 
 class ConfigReader
 {
-    public static function findService(string $name): BackupService|null
+    public static function findService(string $name): Service|null
     {
-        /** @var BackupService $service */
+        /** @var Service $service */
         foreach (config('backup.services', []) as $service) {
             if ($service instanceof $name || (new $service())->getName()) {
                 return new $service();
@@ -21,14 +21,14 @@ class ConfigReader
     }
 
     /**
-     * @return array<BackupService>
+     * @return array<Service>
      */
     public static function getServices(): array
     {
         $services = [];
 
         if (func_num_args() === 0 || (func_num_args() === 1 && func_get_args()[0] === '*')) {
-            /** @var BackupService $service */
+            /** @var Service $service */
             foreach (config('backup.services', []) as $service) {
                 $services[] = new $service();
             }

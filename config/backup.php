@@ -1,6 +1,6 @@
 <?php
 
-use IsaEken\LaravelBackup\BackupServices;
+use IsaEken\LaravelBackup\Services;
 
 return [
 
@@ -11,8 +11,8 @@ return [
     */
 
     'services' => [
-        BackupServices\DatabaseBackupService::class,
-        BackupServices\StorageBackupService::class,
+        Services\DatabaseService::class,
+        Services\StorageService::class,
     ],
 
     /*

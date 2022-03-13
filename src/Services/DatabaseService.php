@@ -1,13 +1,13 @@
 <?php
 
-namespace IsaEken\LaravelBackup\BackupServices;
+namespace IsaEken\LaravelBackup\Services;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Contracts;
 use IsaEken\LaravelBackup\Traits;
 
-class DatabaseBackupService extends BackupService implements Contracts\BackupService, Contracts\HasLogger, Contracts\UsesTemporaryDirectory
+class DatabaseService extends Service implements Contracts\Backup\Service, Contracts\HasLogger, Contracts\UsesTemporaryDirectory
 {
     use Traits\HasLogger;
     use Traits\UsesTemporaryDirectory;

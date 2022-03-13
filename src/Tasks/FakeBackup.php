@@ -4,8 +4,8 @@ namespace IsaEken\LaravelBackup\Tasks;
 
 use Illuminate\Filesystem\FilesystemManager;
 use IsaEken\LaravelBackup\Backup;
-use IsaEken\LaravelBackup\BackupServices\DatabaseBackupService;
-use IsaEken\LaravelBackup\BackupServices\StorageBackupService;
+use IsaEken\LaravelBackup\Services\DatabaseService;
+use IsaEken\LaravelBackup\Services\StorageService;
 
 class FakeBackup extends Backup
 {
@@ -14,8 +14,8 @@ class FakeBackup extends Backup
         /** @var FilesystemManager $filesystemManager */
         $filesystemManager = app('filesystem');
 
-        $this->addBackupService(new DatabaseBackupService());
-        $this->addBackupService(new StorageBackupService());
+        $this->addBackupService(new DatabaseService());
+        $this->addBackupService(new StorageService());
         $this->addBackupStorage($filesystemManager->drive($filesystemManager->getDefaultDriver()));
     }
 }
