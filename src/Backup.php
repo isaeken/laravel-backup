@@ -8,14 +8,16 @@ use IsaEken\LaravelBackup\Contracts\Backup\Service;
 use IsaEken\LaravelBackup\Contracts\HasBackupServices;
 use IsaEken\LaravelBackup\Contracts\HasBackupStorages;
 use IsaEken\LaravelBackup\Contracts\HasLogger;
+use IsaEken\LaravelBackup\Contracts\HasNotifications;
 use IsaEken\LaravelBackup\Contracts\HasPassword;
 
-class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages, HasPassword
+class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages, HasPassword, HasNotifications
 {
     use Traits\HasBackupServices;
     use Traits\HasBackupStorages;
     use Traits\HasPassword;
     use Traits\HasLogger;
+    use Traits\HasNotifications;
 
     /**
      * @inheritDoc

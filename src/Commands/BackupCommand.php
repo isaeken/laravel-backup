@@ -10,7 +10,7 @@ use IsaEken\LaravelBackup\ConfigReader;
 
 class BackupCommand extends Command
 {
-    protected $signature = 'backup:run {--services=*} {--storages=*} {--password=} {--disable-notifications} {--timeout=}';
+    protected $signature = 'backup:run {--services=*} {--storages=*} {--disable-notifications} {--timeout=}';
 
     protected $description = 'Run the backups.';
 
@@ -36,8 +36,9 @@ class BackupCommand extends Command
         }
 
         $backup
-            ->setPassword($this->option('password') ?? '')
-            ->setOutput($this->getOutput());
+            ->setPassword(config('backup.password', ''))
+            ->setOutput($this->getOutput())
+            ->notifications($notifications);
 
         try {
             $backup->run();

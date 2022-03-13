@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Notifications\Notifiable;
+use IsaEken\LaravelBackup\Notifications\BackupCreatedNotification;
 use IsaEken\LaravelBackup\Services;
 
 return [
@@ -35,12 +37,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Notification Channels (eg: email, slack, discord etc...)
+    | Notification Channels (eg: email, slack etc...)
     |--------------------------------------------------------------------------
     */
 
     'notifications' => [
-        // ...
+        'notifications' => [
+            BackupCreatedNotification::class => ['mail'],
+        ],
+
+        'notifiable' => Notifiable::class,
+
+        'mail' => [
+            'to' => 'hello@example.com',
+            'from' => [
+                'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+                'name' => env('MAIL_FROM_NAME', 'Example'),
+            ],
+        ],
+
+        'slack' => [
+            'webhook_url' => '',
+            'channel' => null,
+            'username' => null,
+            'icon' => null,
+        ],
     ],
 
     /*
@@ -49,7 +70,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'password' => null,
+    'password' => env('BACKUP_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------
