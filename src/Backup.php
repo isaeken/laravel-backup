@@ -62,7 +62,10 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
                 $storageClass = $storage::class;
 
                 $this->info("Saving backup '{$backup->getName()}' with using driver: '$storageClass'");
-                if ($storage->put(basename($backup->getOutputFile()), file_get_contents($backup->getOutputFile()))) {
+                if ($storage->put(
+                    config('backup.prefix').basename($backup->getOutputFile()),
+                    file_get_contents($backup->getOutputFile())
+                )) {
                     $this->debug('Backup saved successfully.');
                 } else {
                     $this->error('Backup cannot be saved with using driver: '.$storageClass);
