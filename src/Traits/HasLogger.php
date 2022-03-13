@@ -50,6 +50,7 @@ trait HasLogger
     public function setOutput(OutputStyle $output): static
     {
         $this->output = $output;
+
         return $this;
     }
 

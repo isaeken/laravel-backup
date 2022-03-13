@@ -5,8 +5,6 @@ namespace IsaEken\LaravelBackup;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use IsaEken\LaravelBackup\Contracts;
-use IsaEken\LaravelBackup\DataTransferObjects;
 use IsaEken\LaravelBackup\Traits\HasBackupStorages;
 
 class Finder implements Contracts\HasBackupStorages, Contracts\Runnable

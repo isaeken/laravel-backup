@@ -16,7 +16,7 @@ class BackupCommand extends Command
 
     public function handle(): int
     {
-        $notifications = !$this->option('disable-notifications');
+        $notifications = ! $this->option('disable-notifications');
         $services = ConfigReader::getServices($this->explodeOption('services'));
         $storages = ConfigReader::getStorages($this->explodeOption('storages'));
         $backup = new Backup();
@@ -42,10 +42,12 @@ class BackupCommand extends Command
 
         try {
             $backup->run();
+
             return 0;
         } catch (Exception $exception) {
             $this->error($exception);
             Log::emergency($exception);
+
             return 1;
         }
     }
@@ -54,6 +56,7 @@ class BackupCommand extends Command
     {
         $option = $this->option($key) ?? '*';
         $option = (is_array($option) && count($option) < 1) || (is_string($option) && strlen($option) < 1) ? '*' : $option;
+
         return $option === '*' ? $option : explode(',', $option);
     }
 }

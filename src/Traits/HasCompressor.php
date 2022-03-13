@@ -17,6 +17,7 @@ trait HasCompressor
     public function setCompressor(Compressor $compressor): static
     {
         $this->compressor = $compressor;
+
         return $this;
     }
 

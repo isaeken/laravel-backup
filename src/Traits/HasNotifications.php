@@ -16,6 +16,7 @@ trait HasNotifications
     public function enableNotifications(): static
     {
         $this->notifications = true;
+
         return $this;
     }
 
@@ -27,6 +28,7 @@ trait HasNotifications
     public function disableNotifications(): static
     {
         $this->notifications = false;
+
         return $this;
     }
 
@@ -54,7 +56,7 @@ trait HasNotifications
     public function notify(Notification $notification): static
     {
         rescue(
-            fn() => event($notification),
+            fn () => event($notification),
             function () {
                 if ($this instanceof \IsaEken\LaravelBackup\Contracts\HasLogger) {
                     $this->error('Sending notification failed.');

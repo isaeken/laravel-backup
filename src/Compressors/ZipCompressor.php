@@ -52,6 +52,7 @@ class ZipCompressor implements Compressor, HasPassword
     public function setSource(string $source): static
     {
         $this->source = $source;
+
         return $this;
     }
 
@@ -69,6 +70,7 @@ class ZipCompressor implements Compressor, HasPassword
     public function setDestination(string $destination): static
     {
         $this->destination = $destination.DIRECTORY_SEPARATOR.now()->format(static::FILENAME_FORMAT);
+
         return $this;
     }
 
@@ -79,7 +81,7 @@ class ZipCompressor implements Compressor, HasPassword
     {
         throw_unless(is_dir($this->getSource()), FileNotFoundException::class, $this->getSource());
 
-        if (!$this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
+        if (! $this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
             return false;
         }
 

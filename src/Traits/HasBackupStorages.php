@@ -18,6 +18,7 @@ trait HasBackupStorages
     public function addBackupStorage(Filesystem $filesystem, string|null $driver = null): static
     {
         $this->backupStorages[$driver] = $filesystem;
+
         return $this;
     }
 

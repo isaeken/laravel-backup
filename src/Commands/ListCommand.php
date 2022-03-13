@@ -34,7 +34,7 @@ class ListCommand extends Command
 
     protected function displayOverview(Collection $backups): static
     {
-        $rightAlignedCell = new class extends TableStyle {
+        $rightAlignedCell = new class () extends TableStyle {
             public function __construct()
             {
                 $this->setPadType(STR_PAD_LEFT);
@@ -71,6 +71,7 @@ class ListCommand extends Command
     private function formatFileSizeColumn($bytes): string
     {
         $size = humanReadableFileSize($bytes);
+
         return isLargeFileSize($bytes) ? "<error>$size</error>" : $size;
     }
 
@@ -88,6 +89,7 @@ class ListCommand extends Command
     {
         $option = $this->option($key) ?? '*';
         $option = (is_array($option) && count($option) < 1) || (is_string($option) && strlen($option) < 1) ? '*' : $option;
+
         return $option === '*' ? $option : explode(',', $option);
     }
 }

@@ -57,7 +57,7 @@ class StorageService extends Service implements Contracts\Backup\Service, Contra
          * @var string|array $value
          */
         foreach ($collection->collect() as $path => $value) {
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 @File::copy(storage_path($path), $this->getTemporaryDirectory('storage')->path($path));
             }
         }

@@ -17,6 +17,7 @@ trait HasBackupServices
     public function addBackupService(Service $service): static
     {
         $this->backupServices[] = $service;
+
         return $this;
     }
 

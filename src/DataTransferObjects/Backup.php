@@ -40,6 +40,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
     public function setStorage(Filesystem $storage): static
     {
         $this->storage = $storage;
+
         return $this;
     }
 
@@ -57,6 +58,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
     public function setDriver(string|null $driver): static
     {
         $this->driver = $driver;
+
         return $this;
     }
 
@@ -74,6 +76,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
     public function setFilename(string $filename): static
     {
         $this->filename = $filename;
+
         return $this;
     }
 
@@ -91,6 +94,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
     public function setDate(Carbon $date): static
     {
         $this->date = $date;
+
         return $this;
     }
 
@@ -99,7 +103,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
      */
     #[Pure]
     #[ArrayShape([
-        'storage' => "\Illuminate\Contracts\Filesystem\Filesystem", 'filename' => "string", 'date' => "\Carbon\Carbon"
+        'storage' => "\Illuminate\Contracts\Filesystem\Filesystem", 'filename' => "string", 'date' => "\Carbon\Carbon",
     ])]
     public function toArray(): array
     {

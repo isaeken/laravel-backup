@@ -25,6 +25,7 @@ trait UsesTemporaryDirectory
             ->empty();
 
         $this->temporaryDirectories[$key] = $directory;
+
         return $directory->path();
     }
 

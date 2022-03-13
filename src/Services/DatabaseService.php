@@ -19,12 +19,14 @@ class DatabaseService extends Service implements Contracts\Backup\Service, Contr
     public function setConnection(string $connection): static
     {
         $this->connection = $connection;
+
         return $this;
     }
 
     public function getConnection(): array
     {
         $connection = $this->connection ?? config('database.default');
+
         return config('database.connections')[$connection];
     }
 

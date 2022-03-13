@@ -4,9 +4,9 @@ namespace IsaEken\LaravelBackup\Tests;
 
 use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
-use ZipArchive;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
+use ZipArchive;
 
 it('is compressing files', function () {
     $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-backup-test-'.rand(0, 10000);

@@ -26,6 +26,7 @@ abstract class Service implements Contracts\Backup\Service
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ abstract class Service implements Contracts\Backup\Service
     public function setSuccessStatus(bool $success): static
     {
         $this->success = $success;
+
         return $this;
     }
 
@@ -60,6 +62,7 @@ abstract class Service implements Contracts\Backup\Service
     public function setOutputFile(string|null $path): static
     {
         $this->outputFile = $path;
+
         return $this;
     }
 }
