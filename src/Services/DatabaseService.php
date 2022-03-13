@@ -55,6 +55,7 @@ class DatabaseService extends Service implements Contracts\Backup\Service, Contr
 
         if ($databaseName == 'memory') {
             $this->error('Unsupported database driver: '.$databaseName);
+
             return;
         }
 
