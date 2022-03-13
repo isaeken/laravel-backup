@@ -49,7 +49,7 @@ class DatabaseService extends Service implements Contracts\Backup\Service, Contr
     {
         $this->makeTemporaryDirectory('sqlite');
         $databasePath = $this->getConnection()['database'];
-        $databaseName = Str::beforeLast(basename($databasePath), '.');
+        $databaseName = Str::of(basename($databasePath))->beforeLast('.')->slug('')->value();
         $filename = $databaseName.'_'.now()->format('Y-m-d-H-i-s').'.sqlite';
         $filepath = $this->getTemporaryDirectory('sqlite')->path($filename);
         @File::copy($databasePath, $filepath);
