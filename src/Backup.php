@@ -7,14 +7,12 @@ use IsaEken\LaravelBackup\Contracts\BackupManager;
 use IsaEken\LaravelBackup\Contracts\BackupService;
 use IsaEken\LaravelBackup\Contracts\HasBackupServices;
 use IsaEken\LaravelBackup\Contracts\HasBackupStorages;
-use IsaEken\LaravelBackup\Contracts\HasCompressor;
 use IsaEken\LaravelBackup\Contracts\HasLogger;
 use IsaEken\LaravelBackup\Contracts\HasPassword;
 
-class Backup implements BackupManager, HasLogger, HasBackupServices, HasCompressor, HasBackupStorages, HasPassword
+class Backup implements BackupManager, HasLogger, HasBackupServices, HasBackupStorages, HasPassword
 {
     use Traits\HasBackupServices;
-    use Traits\HasCompressor;
     use Traits\HasBackupStorages;
     use Traits\HasPassword;
     use Traits\HasLogger;
@@ -34,11 +32,6 @@ class Backup implements BackupManager, HasLogger, HasBackupServices, HasCompress
             if ($service instanceof HasLogger) {
                 $this->debug('Setting service logger: '.$this->getOutput()::class);
                 $service->setOutput($this->getOutput());
-            }
-
-            if ($service instanceof HasCompressor) {
-                $this->debug('Setting service compressor: '.$this->getCompressor()::class);
-                $service->setCompressor($this->getCompressor());
             }
 
             if ($service instanceof HasPassword) {

@@ -3,40 +3,23 @@
 namespace IsaEken\LaravelBackup\BackupServices;
 
 use Illuminate\Support\Facades\File;
-use IsaEken\LaravelBackup\BackupServices\BackupService as BaseBackupService;
 use IsaEken\LaravelBackup\Collectors\DirectoryCollector;
-use IsaEken\LaravelBackup\Contracts\BackupManager;
-use IsaEken\LaravelBackup\Contracts\BackupService;
-use IsaEken\LaravelBackup\Exceptions\CompressorNotProvidedException;
+use IsaEken\LaravelBackup\Compressors\ZipCompressor;
+use IsaEken\LaravelBackup\Contracts;
+use IsaEken\LaravelBackup\Traits;
 
-class StorageBackupService extends BaseBackupService implements BackupService
+class StorageBackupService extends BackupService implements Contracts\BackupService, Contracts\HasLogger, Contracts\HasCompressor, Contracts\HasPassword, Contracts\UsesTemporaryDirectory
 {
+    use Traits\HasLogger;
+    use Traits\HasCompressor;
+    use Traits\HasPassword;
+    use Traits\UsesTemporaryDirectory;
+
     protected string $name = 'storage';
 
-    public string|null $storage_path = null;
-
-    private function source_path(string|null $path = null): false|string
+    public function __construct()
     {
-        if ($path !== null) {
-            return $this->storage_path.DIRECTORY_SEPARATOR.trim($path);
-        }
-
-        return $this->storage_path;
-    }
-
-    private function temporary_path(string|null $path = null): string
-    {
-        if ($path !== null) {
-            return $this->temporaryDirectory->path('backup').DIRECTORY_SEPARATOR.trim($path);
-        }
-
-        return $this->temporaryDirectory->path('backup');
-    }
-
-    public function __construct(public BackupManager $backupManager)
-    {
-        parent::__construct($this->backupManager);
-        $this->storage_path = storage_path();
+        $this->setCompressor(new ZipCompressor());
     }
 
     /**
@@ -44,12 +27,18 @@ class StorageBackupService extends BaseBackupService implements BackupService
      */
     public function run(): void
     {
-        $this->info('Collecting files...', true);
+        if ($this->getCompressor() instanceof Contracts\HasPassword) {
+            $this->getCompressor()->setPassword($this->getPassword());
+        }
 
-        $collection = new DirectoryCollector($this->source_path());
+        $this->makeTemporaryDirectory('storage');
+
+        $this->info('Collecting files...');
+
+        $collection = new DirectoryCollector(storage_path());
         $collection->run();
 
-        $this->info('Making directories...', true);
+        $this->debug('Making directories...');
 
         /**
          * @var string $path
@@ -57,11 +46,11 @@ class StorageBackupService extends BaseBackupService implements BackupService
          */
         foreach ($collection->collect() as $path => $value) {
             if (is_array($value)) {
-                @File::makeDirectory($this->temporary_path($path), recursive: true);
+                @File::makeDirectory($this->getTemporaryDirectory('storage')->path($path), recursive: true);
             }
         }
 
-        $this->info('Copying files...', true);
+        $this->debug('Copying files...');
 
         /**
          * @var string $path
@@ -69,22 +58,23 @@ class StorageBackupService extends BaseBackupService implements BackupService
          */
         foreach ($collection->collect() as $path => $value) {
             if (!is_array($value)) {
-                File::copy($this->source_path($path), $this->temporary_path($path));
+                @File::copy(storage_path($path), $this->getTemporaryDirectory('storage')->path($path));
             }
         }
 
-        $this->info('Compressing...', true);
-        throw_if($this->getCompressor() === null, CompressorNotProvidedException::class);
+        $this->debug('Compressing...');
 
         $this
             ->getCompressor()
-            ->setSource($this->temporary_path())
-            ->setDestination($this->temporaryDirectory->path());
+            ->setSource($this->getTemporaryDirectory('storage')->path())
+            ->setDestination($this->getTemporaryDirectory('storage')->path());
 
         if ($this->getCompressor()->run()) {
-            $this->outputFile = $this->getCompressor()->getDestination();
-            $this->success = true;
-            $this->success('Backup generated: '.$this->outputFile);
+            $this
+                ->setOutputFile($this->getCompressor()->getDestination())
+                ->setSuccessStatus(true);
+
+            $this->success('Backup generated: '.$this->getOutputFile());
         } else {
             $this->error('Compression failed!');
         }
