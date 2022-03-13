@@ -5,14 +5,14 @@ namespace IsaEken\LaravelBackup\Contracts;
 interface HasPassword
 {
     /**
-     * Get compression password if available.
+     * Get password available.
      *
      * @return string
      */
     public function getPassword(): string;
 
     /**
-     * Set compression password if available.
+     * Set password available.
      *
      * @param  string  $password
      * @return $this

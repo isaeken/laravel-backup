@@ -13,11 +13,11 @@ use ZipArchive;
 
 class ZipCompressor implements Compressor, HasPassword
 {
+    use \IsaEken\LaravelBackup\Traits\HasPassword;
+
     public const FILENAME_FORMAT = 'Y-m-d-H-i-s.\z\i\p';
 
     protected ZipArchive $zipArchive;
-
-    private string $password = '';
 
     private string $source = '';
 
@@ -75,32 +75,15 @@ class ZipCompressor implements Compressor, HasPassword
     /**
      * @inheritDoc
      */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function run(): bool
     {
-        throw_unless(is_dir($this->source), FileNotFoundException::class, $this->source);
+        throw_unless(is_dir($this->getSource()), FileNotFoundException::class, $this->getSource());
 
-        if (!$this->zipArchive->open($this->destination, ZipArchive::CREATE)) {
+        if (!$this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
             return false;
         }
 
-        $source = realpath($this->source);
+        $source = realpath($this->getSource());
 
         if (is_dir($source) === true) {
             $files = new RecursiveIteratorIterator(
@@ -119,11 +102,11 @@ class ZipCompressor implements Compressor, HasPassword
                 } elseif (is_file($file) === true) {
                     $this->zipArchive->addFromString($this->zippedPath($file), file_get_contents($file));
 
-                    if (mb_strlen($this->password) > 0) {
+                    if (mb_strlen($this->getPassword()) > 0) {
                         $this->zipArchive->setEncryptionName(
                             $this->zippedPath($file),
                             ZipArchive::EM_AES_256,
-                            $this->password
+                            $this->getPassword(),
                         );
                     }
                 }
@@ -131,11 +114,11 @@ class ZipCompressor implements Compressor, HasPassword
         } elseif (is_file($source) === true) {
             $this->zipArchive->addFromString(basename($source), file_get_contents($source));
 
-            if (mb_strlen($this->password) > 0) {
+            if (mb_strlen($this->getPassword()) > 0) {
                 $this->zipArchive->setEncryptionName(
                     basename($source),
                     ZipArchive::EM_AES_256,
-                    $this->password
+                    $this->getPassword(),
                 );
             }
         }

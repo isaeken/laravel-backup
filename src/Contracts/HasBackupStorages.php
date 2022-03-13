@@ -13,4 +13,11 @@ interface HasBackupStorages
      * @return $this
      */
     public function addBackupStorage(Filesystem $filesystem): static;
+
+    /**
+     * Get all backup storage instances.
+     *
+     * @return array
+     */
+    public function getBackupStorages(): array;
 }

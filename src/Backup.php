@@ -2,71 +2,22 @@
 
 namespace IsaEken\LaravelBackup;
 
-use Illuminate\Contracts\Filesystem\Filesystem;
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
 use IsaEken\LaravelBackup\Contracts\BackupManager;
 use IsaEken\LaravelBackup\Contracts\BackupService;
-use IsaEken\LaravelBackup\Contracts\BackupStorage;
-use IsaEken\LaravelBackup\Contracts\Compressor;
-use IsaEken\LaravelBackup\Traits\HasOutput;
+use IsaEken\LaravelBackup\Contracts\HasBackupServices;
+use IsaEken\LaravelBackup\Contracts\HasBackupStorages;
+use IsaEken\LaravelBackup\Contracts\HasCompressor;
+use IsaEken\LaravelBackup\Contracts\HasLogger;
+use IsaEken\LaravelBackup\Contracts\HasPassword;
 
-class Backup implements BackupManager
+class Backup implements BackupManager, HasLogger, HasBackupServices, HasCompressor, HasBackupStorages, HasPassword
 {
-    use HasOutput;
-
-    private string $password = '';
-
-    private array $services = [];
-
-    private array $storages = [];
-
-    /**
-     * Get backup encryption password.
-     *
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * Set backup encryption password.
-     *
-     * @param  string  $password
-     * @return $this
-     */
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setCompressor(Compressor $compressor): static
-    {
-        // TODO: Implement setCompressor() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addBackupService(BackupService $service): static
-    {
-        $this->services[] = $service;
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addBackupStorage(Filesystem $filesystem): static
-    {
-        $this->storages[] = $filesystem;
-        return $this;
-    }
+    use Traits\HasBackupServices;
+    use Traits\HasCompressor;
+    use Traits\HasBackupStorages;
+    use Traits\HasPassword;
+    use Traits\HasLogger;
 
     /**
      * @inheritDoc

@@ -11,4 +11,11 @@ interface HasBackupServices
      * @return $this
      */
     public function addBackupService(BackupService $service): static;
+
+    /**
+     * Get all backup services.
+     *
+     * @return array
+     */
+    public function getBackupServices(): array;
 }
