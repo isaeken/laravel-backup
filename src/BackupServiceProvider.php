@@ -2,6 +2,7 @@
 
 namespace IsaEken\LaravelBackup;
 
+use IsaEken\LaravelBackup\Commands\BackupCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -11,11 +12,11 @@ class BackupServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('laravel-backup')
-            ->hasConfigFile();
+            ->hasConfigFile()
 //            ->hasTranslations()
-//            ->hasCommands([
-//
-//            ]);
+            ->hasCommands([
+                BackupCommand::class,
+            ]);
     }
 
     public function packageBooted()

@@ -1,7 +1,6 @@
 <?php
 
-use IsaEken\LaravelBackup\BackupServices\StorageBackupService;
-use IsaEken\LaravelBackup\Storages\FakeBackupStorage;
+use IsaEken\LaravelBackup\BackupServices;
 
 // @todo
 return [
@@ -19,6 +18,15 @@ return [
     | Backup configuration
     |--------------------------------------------------------------------------
     */
+
+    'services' => [
+        BackupServices\DatabaseBackupService::class,
+        BackupServices\StorageBackupService::class,
+    ],
+
+    'storages' => [
+        'local',
+    ],
 
     'backup' => [
 
