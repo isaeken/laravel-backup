@@ -14,6 +14,7 @@
         </testsuite>
     </testsuites>
     <php>
-        <env name="APP_NAME" value="mysite"/>
+        <env name="APP_NAME" value="Laravel Backup"/>
+        <env name="DB_CONNECTION" value="testing"/>
     </php>
 </phpunit>
