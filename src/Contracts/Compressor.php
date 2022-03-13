@@ -2,7 +2,7 @@
 
 namespace IsaEken\LaravelBackup\Contracts;
 
-interface Compressor
+interface Compressor extends Runnable
 {
     /**
      * Get source.
@@ -33,11 +33,4 @@ interface Compressor
      * @return string
      */
     public function getDestination(): string;
-
-    /**
-     * Compress given source to destination.
-     *
-     * @return bool
-     */
-    public function run(): bool;
 }

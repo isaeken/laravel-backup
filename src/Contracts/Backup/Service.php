@@ -2,7 +2,9 @@
 
 namespace IsaEken\LaravelBackup\Contracts\Backup;
 
-interface Service
+use IsaEken\LaravelBackup\Contracts\Runnable;
+
+interface Service extends Runnable
 {
     /**
      * Get the backup provider name.
@@ -48,11 +50,4 @@ interface Service
      * @return $this
      */
     public function setOutputFile(string|null $path): static;
-
-    /**
-     * Generate a new backup.
-     *
-     * @return void
-     */
-    public function run(): void;
 }

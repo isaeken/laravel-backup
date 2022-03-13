@@ -12,11 +12,12 @@ trait HasBackupStorages
      * Add a backup storage.
      *
      * @param  Filesystem  $filesystem
+     * @param  string|null  $driver
      * @return $this
      */
-    public function addBackupStorage(Filesystem $filesystem): static
+    public function addBackupStorage(Filesystem $filesystem, string|null $driver = null): static
     {
-        $this->backupStorages[] = $filesystem;
+        $this->backupStorages[$driver] = $filesystem;
         return $this;
     }
 

@@ -2,12 +2,9 @@
 
 namespace IsaEken\LaravelBackup\Contracts\Backup;
 
-interface Manager
+use IsaEken\LaravelBackup\Contracts\Runnable;
+
+interface Manager extends Runnable
 {
-    /**
-     * Run the backup services.
-     *
-     * @return void
-     */
-    public function run(): void;
+    // ...
 }

@@ -25,3 +25,22 @@ if (!function_exists('ageInDays')) {
         return number_format(round($date->diffInMinutes() / (24 * 60), 2), 2).' ('.$date->diffForHumans().')';
     }
 }
+
+if (!function_exists('isLargeFileSize')) {
+    function isLargeFileSize(float $bytes, int $gigabytes = 4): bool
+    {
+        if ($bytes < 1024) {
+            return false;
+        }
+
+        for ($i = 0; $bytes > 1024; $i++) {
+            $bytes /= 1024;
+        }
+
+        if ($i == 3 && $bytes >= $gigabytes) {
+            return true;
+        }
+
+        return $i > 3;
+    }
+}

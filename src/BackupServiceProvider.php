@@ -3,6 +3,7 @@
 namespace IsaEken\LaravelBackup;
 
 use IsaEken\LaravelBackup\Commands\BackupCommand;
+use IsaEken\LaravelBackup\Commands\ListCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -16,6 +17,7 @@ class BackupServiceProvider extends PackageServiceProvider
 //            ->hasTranslations()
             ->hasCommands([
                 BackupCommand::class,
+                ListCommand::class,
             ]);
     }
 

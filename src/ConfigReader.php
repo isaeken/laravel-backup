@@ -60,7 +60,7 @@ class ConfigReader
 
         if (func_num_args() === 0 || (func_num_args() === 1 && func_get_args()[0] === '*')) {
             foreach (config('backup.storages', []) as $storage) {
-                $storages[] = $filesystemManager->drive($storage);
+                $storages[$storage] = $filesystemManager->drive($storage);
             }
 
             return $storages;
@@ -69,10 +69,10 @@ class ConfigReader
         foreach (func_get_args() as $driver) {
             if (is_array($driver)) {
                 foreach ($driver as $item) {
-                    $storages[] = $filesystemManager->drive($item);
+                    $storages[$item] = $filesystemManager->drive($item);
                 }
             } else {
-                $storages[] = $filesystemManager->drive($driver);
+                $storages[$driver] = $filesystemManager->drive($driver);
             }
         }
 
