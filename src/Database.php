@@ -50,6 +50,7 @@ class Database
     public function save(): static
     {
         @file_put_contents(config('backup.database'), $this->backups()->toJson());
+
         return $this;
     }
 }

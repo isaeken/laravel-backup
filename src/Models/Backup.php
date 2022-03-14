@@ -18,6 +18,7 @@ class Backup extends Model
     public function setFilesystem(Filesystem $filesystem): static
     {
         $this->setAttribute('filesystem', $filesystem);
+
         return $this;
     }
 
@@ -29,6 +30,7 @@ class Backup extends Model
     public function setDriver(string $driver): static
     {
         $this->setAttribute('driver', $driver);
+
         return $this;
     }
 
@@ -40,6 +42,7 @@ class Backup extends Model
     public function setFilename(string $filename): static
     {
         $this->setAttribute('filename', $filename);
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ class Backup extends Model
     public function setSize(int $size): static
     {
         $this->setAttribute('size', $size);
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ class Backup extends Model
     public function setDate(Carbon $date): static
     {
         $this->setAttribute('date', $date);
+
         return $this;
     }
 
