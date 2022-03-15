@@ -127,7 +127,7 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
                 ]));
 
                 if ($storage->put($filename, file_get_contents($backupService->getOutputFile()))) {
-                    $model = config('backup.model', Models\Backup::class)();
+                    $model = new (config('backup.model', Models\Backup::class))();
                     $model->fill([
                         'filesystem' => $storage,
                         'driver' => $driver,
