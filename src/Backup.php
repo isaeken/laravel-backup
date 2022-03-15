@@ -138,12 +138,13 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
                     $model->save();
                     $this->debug(trans('Backup saved successfully.'));
                 } else {
-                    $this->error(trans('Backup ":service" cannot be saved to ":filename" with using driver: ":driver"',
-                        [
+                    $this->error(trans(
+                        'Backup ":service" cannot be saved to ":filename" with using driver: ":driver"', [
                             'service' => $backupService->getName(),
                             'filename' => $filename,
                             'driver' => $driver,
-                        ]));
+                        ]
+                    ));
                 }
             }
         }
