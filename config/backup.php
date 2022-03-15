@@ -1,9 +1,5 @@
 <?php
 
-use Illuminate\Notifications\Notifiable;
-use IsaEken\LaravelBackup\Notifications\BackupCreatedNotification;
-use IsaEken\LaravelBackup\Services;
-
 return [
 
     /*
@@ -16,11 +12,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Backup file prefix
+    | Backup model
     |--------------------------------------------------------------------------
     */
 
-    'prefix' => 'backup_',
+    'model' => IsaEken\LaravelBackup\Models\Backup::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Backup filename pattern
+    |--------------------------------------------------------------------------
+    */
+
+    'filename_pattern' => 'backup_:app_name_:service_name_:datetime.:extension',
 
     /*
     |--------------------------------------------------------------------------
@@ -29,8 +33,8 @@ return [
     */
 
     'services' => [
-        Services\DatabaseService::class,
-        Services\StorageService::class,
+        IsaEken\LaravelBackup\Services\DatabaseService::class,
+        IsaEken\LaravelBackup\Services\StorageService::class,
     ],
 
     /*
@@ -51,10 +55,10 @@ return [
 
     'notifications' => [
         'notifications' => [
-            BackupCreatedNotification::class => ['mail'],
+            IsaEken\LaravelBackup\Notifications\BackupCreatedNotification::class => ['mail'],
         ],
 
-        'notifiable' => Notifiable::class,
+        'notifiable' => Illuminate\Notifications\Notifiable::class,
 
         'mail' => [
             'to' => 'hello@example.com',
