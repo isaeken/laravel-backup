@@ -10,6 +10,7 @@ use IsaEken\LaravelBackup\Contracts\HasBackupStorages;
 use IsaEken\LaravelBackup\Contracts\HasLogger;
 use IsaEken\LaravelBackup\Contracts\HasNotifications;
 use IsaEken\LaravelBackup\Contracts\HasPassword;
+use IsaEken\LaravelBackup\Contracts\Runnable;
 
 class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages, HasPassword, HasNotifications
 {
@@ -81,7 +82,14 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
             }
 
             $this->debug(trans('Backup generating...'));
-            $backupService->run();
+
+            if ($backupService instanceof Runnable || method_exists($backupService, 'run')) {
+                $backupService->run();
+            } elseif (method_exists($backupService, '__invoke')) {
+                $backupService->__invoke();
+            } elseif (method_exists($backupService, '__call')) {
+                $backupService->__call();
+            }
 
             if ($backupService->isSuccessful()) {
                 $this->debug(trans('Backup generated.'));
