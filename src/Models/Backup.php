@@ -15,6 +15,22 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Backup extends Model
 {
+    protected $fillable = [
+        'filesystem',
+        'driver',
+        'filename',
+        'size',
+        'date',
+    ];
+
+    protected $casts = [
+        'filesysteö' => Filesystem::class,
+        'driver' => 'string',
+        'filename' => 'string',
+        'size' => 'int',
+        'date' => 'datetime',
+    ];
+
     public function setFilesystem(Filesystem $filesystem): static
     {
         $this->setAttribute('filesystem', $filesystem);
