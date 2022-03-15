@@ -18,7 +18,7 @@ interface HasBackupStorages
     /**
      * Get all backup storage instances.
      *
-     * @return array
+     * @return array<Filesystem>
      */
     public function getBackupStorages(): array;
 }
