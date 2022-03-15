@@ -19,6 +19,13 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
     use Traits\HasLogger;
     use Traits\HasNotifications;
 
+    /**
+     * Make file name using pattern.
+     *
+     * @param  string  $filename  Real file name with extension.
+     * @param  Service  $service
+     * @return string
+     */
     protected function makeFilename(string $filename, Service $service): string
     {
         $pattern = config('backup.pattern', 'backup_:app_name_:service_name_:datetime.:extension');
@@ -43,6 +50,8 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
     }
 
     /**
+     * Run backup services.
+     *
      * @return array<Service>
      */
     protected function createBackups(): array
@@ -93,6 +102,8 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
     }
 
     /**
+     * Store backup service data files to storages.
+     *
      * @param  array<Service>  $backupServices
      */
     protected function storeBackups(array $backupServices)
