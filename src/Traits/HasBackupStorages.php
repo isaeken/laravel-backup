@@ -25,7 +25,7 @@ trait HasBackupStorages
     /**
      * Get all backup storage instances.
      *
-     * @return array
+     * @return array<string|int, Filesystem>
      */
     public function getBackupStorages(): array
     {

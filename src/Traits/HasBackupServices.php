@@ -24,7 +24,7 @@ trait HasBackupServices
     /**
      * Get all backup services.
      *
-     * @return array
+     * @return array<Service>
      */
     public function getBackupServices(): array
     {
