@@ -88,4 +88,23 @@ class Backup extends Model
     {
         return $this->getAttribute('date');
     }
+
+    /**
+     * Save the model to the database.
+     *
+     * @param  array  $options
+     * @return bool
+     */
+    public function save(array $options = []): bool
+    {
+        $this->mergeAttributesFromCachedCasts();
+        if ($this->fireModelEvent('saving') === false) {
+            return false;
+        }
+
+        // @todo save
+
+        $this->finishSave($options);
+        return true;
+    }
 }
