@@ -29,7 +29,7 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
      */
     protected function makeFilename(string $filename, Service $service): string
     {
-        $pattern = config('backup.pattern', 'backup_:app_name_:service_name_:datetime.:extension');
+        $pattern = config('backup.filename_pattern', 'backup_:app_name_:service_name_:datetime');
         $extension = Str::afterLast($filename, '.');
 
         $replaces = [

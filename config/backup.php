@@ -24,7 +24,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'filename_pattern' => 'backup_:app_name_:service_name_:datetime.:extension',
+    'filename_pattern' => 'backup_:app_name_:service_name_:datetime',
 
     /*
     |--------------------------------------------------------------------------
