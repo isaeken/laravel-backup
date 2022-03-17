@@ -37,9 +37,9 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
             'extension' => $extension,
             'app_name' => config('app.name', 'Laravel'),
             'service_name' => $service->getName(),
+            'datetime' => date('Y-m-d-H-i-s'),
             'date' => date('Y-m-d'),
             'time' => date('H-i-s'),
-            'datetime' => date('Y-m-d-H-i-s'),
         ];
 
         $filename = Str::of($pattern);
