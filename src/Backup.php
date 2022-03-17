@@ -47,7 +47,7 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
             $filename = $filename->replace(":$key", $value);
         }
 
-        return $filename->value();
+        return $filename->slug('_')->append(".$extension")->value();
     }
 
     /**
