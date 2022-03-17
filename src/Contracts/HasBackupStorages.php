@@ -10,15 +10,15 @@ interface HasBackupStorages
      * Add a backup storage.
      *
      * @param  Filesystem  $filesystem
-     * @param  string|null  $driver
+     * @param  string  $driver
      * @return $this
      */
-    public function addBackupStorage(Filesystem $filesystem, string|null $driver = null): static;
+    public function addBackupStorage(Filesystem $filesystem, string $driver): static;
 
     /**
      * Get all backup storage instances.
      *
-     * @return array<Filesystem>
+     * @return array<string, Filesystem>
      */
     public function getBackupStorages(): array;
 }
