@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 class Backup extends Model
 {
     protected $fillable = [
-        'filesystem',
         'driver',
         'filename',
         'size',
@@ -24,7 +23,6 @@ class Backup extends Model
     ];
 
     protected $casts = [
-        'filesysteö' => Filesystem::class,
         'driver' => 'string',
         'filename' => 'string',
         'size' => 'int',
