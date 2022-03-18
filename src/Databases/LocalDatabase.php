@@ -30,7 +30,7 @@ class LocalDatabase implements DatabaseDriver
      */
     public function size(): float
     {
-        if (!is_null($this->sizeCache)) {
+        if (! is_null($this->sizeCache)) {
             return $this->sizeCache;
         }
 
