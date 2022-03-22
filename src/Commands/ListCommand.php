@@ -4,66 +4,72 @@ namespace IsaEken\LaravelBackup\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use IsaEken\LaravelBackup\ConfigReader;
-use IsaEken\LaravelBackup\DataTransferObjects\Backup;
-use IsaEken\LaravelBackup\Finder;
-use Symfony\Component\Console\Helper\TableStyle;
+use IsaEken\LaravelBackup\Console\Table\Column;
+use IsaEken\LaravelBackup\Console\Table\Table;
+use IsaEken\LaravelBackup\Models\Backup;
 
 class ListCommand extends Command
 {
-    protected $signature = 'backup:list {--storages=*}';
+    protected $signature = 'backup:list {--disk=*} {--check=false}';
 
     protected $description = 'Display a list of all backups.';
 
     public function handle(): int
     {
-        $finder = new Finder();
-        $storages = ConfigReader::getStorages($this->explodeOption('storages'));
+        $disks = collect($this->option('disk'));
 
-        /** @var Filesystem $storage */
-        foreach ($storages as $driver => $storage) {
-            $finder->addBackupStorage($storage, $driver);
+        /** @var \IsaEken\LaravelBackup\Contracts\Backup\Backup $model */
+        $model = config('backup.database.model', Backup::class);
+        $models = $model::all();
+        $backups = collect();
+
+        if ($disks->count() > 0) {
+            foreach ($disks as $disk) {
+                $backups = $backups->merge($models->where('disk', $disk));
+            }
+        } else {
+            $backups = $models;
         }
 
-        $this->displayOverview($finder->run());
+        $this->displayOverview($backups);
 
         return 0;
     }
 
     protected function displayOverview(Collection $backups): static
     {
-        $rightAlignedCell = new class () extends TableStyle {
-            public function __construct()
-            {
-                $this->setPadType(STR_PAD_LEFT);
-            }
-        };
-
-        $usedStorage = 0;
-        $headers = ['#', 'Name', 'Disk', 'Date', 'Size'];
-        $rows = [];
-
-        /** @var Backup $backup */
-        foreach ($backups as $index => $backup) {
-            $fileSize = $backup->getStorage()->size($backup->getFilename());
-            $usedStorage += $fileSize;
-            $rows[] = [
-                $index + 1,
-                $backup->getFilename(),
-                $backup->getDriver(),
-                $this->formatDateColumn($backup->getDate()),
-                $this->formatFileSizeColumn($fileSize),
-            ];
+        if ($backups->count() < 1) {
+            $this->alert('!!  '.trans('NO ANY BACKUPS EXISTS').'  !!');
+            return $this;
         }
 
-        $this->table($headers, $rows, 'default', [
-            3 => $rightAlignedCell,
-            4 => $rightAlignedCell,
-        ]);
+        $totalUsedStorage = 0;
+        $table = new Table();
 
-        $this->alert('Totally Used Storage: '.humanReadableFileSize($usedStorage));
+        $table->addColumn(new Column('id', '#', false));
+        $table->addColumn(new Column('filename', trans('Filename'), false));
+        $table->addColumn(new Column('disk', trans('Disk / Storage'), false));
+        $table->addColumn(new Column('size', trans('Size'), true));
+        $table->addColumn(new Column('created_at', trans('Created Date'), false));
+
+        /** @var Backup $backup */
+        foreach ($backups as $backup) {
+            $table->addRow([
+                'id' => $backup->getId(),
+                'filename' => $backup->getFilename(),
+                'disk' => $backup->getDisk(),
+                'size' => $this->formatFileSizeColumn($backup->getSize()),
+                'created_at' => $this->formatDateColumn($backup->getCreatedAt()),
+            ]);
+
+            $totalUsedStorage += $backup->getSize();
+        }
+
+        $table->render($this);
+        $this->alert(trans('Total Used Storage: :size', [
+            'size' => humanReadableFileSize($totalUsedStorage),
+        ]));
 
         return $this;
     }
@@ -83,13 +89,5 @@ class ListCommand extends Command
         }
 
         return $date;
-    }
-
-    private function explodeOption(string $key): array|string
-    {
-        $option = $this->option($key) ?? '*';
-        $option = (is_array($option) && count($option) < 1) || (is_string($option) && strlen($option) < 1) ? '*' : $option;
-
-        return $option === '*' ? $option : explode(',', $option);
     }
 }
