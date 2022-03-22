@@ -2,71 +2,102 @@
 
 namespace IsaEken\LaravelBackup\Contracts\Backup;
 
+use ArrayAccess;
 use Carbon\Carbon;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use Stringable;
+use Illuminate\Support\Collection;
+use JsonSerializable;
 
-interface Backup extends Arrayable, Stringable, Jsonable
+interface Backup extends Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
     /**
-     * Get the storage.
+     * Get the unique ID.
      *
-     * @return Filesystem
+     * @return int
      */
-    public function getStorage(): Filesystem;
+    public function getId(): int;
 
     /**
-     * Set the storage.
+     * Set unique ID.
      *
-     * @param  Filesystem  $storage
+     * @param  int  $id
      * @return $this
      */
-    public function setStorage(Filesystem $storage): static;
+    public function setId(int $id): self;
 
     /**
-     * Get the driver.
-     *
-     * @return string
-     */
-    public function getDriver(): string;
-
-    /**
-     * Set the driver.
-     *
-     * @param  string  $driver
-     * @return $this
-     */
-    public function setDriver(string $driver): static;
-
-    /**
-     * Get the filename.
+     * Get filename.
      *
      * @return string
      */
     public function getFilename(): string;
 
     /**
-     * Set the filename.
+     * Set filename.
      *
      * @param  string  $filename
      * @return $this
      */
-    public function setFilename(string $filename): static;
+    public function setFilename(string $filename): self;
 
     /**
-     * Get the date.
+     * Get disk name.
+     *
+     * @return string
+     */
+    public function getDisk(): string;
+
+    /**
+     * Set disk name.
+     *
+     * @param  string  $disk
+     * @return $this
+     */
+    public function setDisk(string $disk): self;
+
+    /**
+     * Get creation date.
      *
      * @return Carbon
      */
-    public function getDate(): Carbon;
+    public function getCreatedAt(): Carbon;
 
     /**
-     * Set the date.
+     * Set creation date.
      *
      * @param  Carbon  $date
      * @return $this
      */
-    public function setDate(Carbon $date): static;
+    public function setCreatedAt(Carbon $date): self;
+
+    /**
+     * Get size in bytes.
+     *
+     * @return int
+     */
+    public function getSize(): int;
+
+    /**
+     * Set size in bytes.
+     *
+     * @param  int  $size
+     * @return $this
+     */
+    public function setSize(int $size): self;
+
+    /**
+     * Get all records.
+     *
+     * @return Collection
+     */
+    public static function all(): Collection;
+
+    /**
+     * Create new record.
+     *
+     * @param  array  $attributes
+     * @return self
+     */
+    public static function create(array $attributes): self;
 }
