@@ -69,7 +69,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
 
     public function getAttribute(string $attribute, mixed $default = null): mixed
     {
-        if (!array_key_exists($attribute, $this->attributes) || $this->attributes[$attribute] === null) {
+        if (! array_key_exists($attribute, $this->attributes) || $this->attributes[$attribute] === null) {
             return $default;
         }
 
@@ -90,6 +90,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
     public function setAttribute(string $attribute, mixed $value): self
     {
         $this->attributes[$attribute] = $value;
+
         return $this;
     }
 
@@ -237,7 +238,7 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
 
     public static function all(): Collection
     {
-        if (!is_null(static::$cache)) {
+        if (! is_null(static::$cache)) {
             return collect(static::$cache);
         }
 
@@ -254,11 +255,11 @@ class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
 
     public static function create(array $attributes): static
     {
-        if (!array_key_exists('id', $attributes)) {
+        if (! array_key_exists('id', $attributes)) {
             $attributes['id'] = time().rand(0, 999999);
         }
 
-        if (!array_key_exists('created_at', $attributes)) {
+        if (! array_key_exists('created_at', $attributes)) {
             $attributes['created_at'] = now();
         }
 

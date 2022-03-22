@@ -2,8 +2,8 @@
 
 namespace IsaEken\LaravelBackup\Console\Table;
 
-use Illuminate\Console\Command;
 use function collect;
+use Illuminate\Console\Command;
 
 class Table
 {
@@ -16,6 +16,7 @@ class Table
     public function addColumn(Column $column): self
     {
         $this->columns[] = $column;
+
         return $this;
     }
 
@@ -36,6 +37,7 @@ class Table
         }
 
         $this->rows[] = $record;
+
         return $this;
     }
 

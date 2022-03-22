@@ -41,6 +41,7 @@ class ListCommand extends Command
     {
         if ($backups->count() < 1) {
             $this->alert('!!  '.trans('NO ANY BACKUPS EXISTS').'  !!');
+
             return $this;
         }
 
