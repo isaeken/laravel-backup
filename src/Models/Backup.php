@@ -3,108 +3,271 @@
 namespace IsaEken\LaravelBackup\Models;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\Pure;
 
 /**
- * @property Filesystem $filesystem
- * @property string $driver
+ * @property string $id
  * @property string $filename
- * @property int $size
+ * @property string $disk
  * @property Carbon $date
+ * @property int $size
  */
-class Backup extends Model
+class Backup implements \IsaEken\LaravelBackup\Contracts\Backup\Backup
 {
-    protected $fillable = [
-        'driver',
-        'filename',
-        'size',
-        'date',
+    private static array|null $cache = null;
+
+    public array $attributes = [
+        'id' => null,
+        'filename' => null,
+        'disk' => null,
+        'created_at' => null,
+        'size' => null,
     ];
 
-    protected $casts = [
-        'driver' => 'string',
+    public array $casts = [
+        'id' => 'int',
         'filename' => 'string',
+        'disk' => 'string',
+        'created_at' => 'datetime',
         'size' => 'int',
-        'date' => 'datetime',
     ];
 
-    public function setFilesystem(Filesystem $filesystem): static
+    public function __construct(array $attributes = [])
     {
-        $this->setAttribute('filesystem', $filesystem);
+        $this->fill($attributes);
+    }
+
+    public function fill(array $attributes): self
+    {
+        foreach ($attributes as $key => $value) {
+            $this->setAttribute($key, $value);
+        }
 
         return $this;
     }
 
-    public function getFilesystem(): Filesystem
+    public function getAttributes(array $columns = ['*']): array
     {
-        return $this->getAttribute('filesystem');
+        $attributes = [];
+
+        if ($columns == ['*']) {
+            $columns = array_keys($this->attributes);
+        }
+
+        foreach ($columns as $column) {
+            $attributes[$column] = $this->getAttribute($column);
+        }
+
+        return $attributes;
     }
 
-    public function setDriver(string $driver): static
+    public function hasAttribute(string $attribute): bool
     {
-        $this->setAttribute('driver', $driver);
+        return array_key_exists($attribute, $this->attributes);
+    }
 
+    public function getAttribute(string $attribute, mixed $default = null): mixed
+    {
+        if (!array_key_exists($attribute, $this->attributes) || $this->attributes[$attribute] === null) {
+            return $default;
+        }
+
+        if (array_key_exists($attribute, $this->casts)) {
+            switch ($this->casts[$attribute]) {
+                case 'int':
+                case 'integer':
+                    return (int) $this->attributes[$attribute];
+
+                case 'datetime':
+                    return Carbon::make($this->attributes[$attribute]);
+            }
+        }
+
+        return $this->attributes[$attribute];
+    }
+
+    public function setAttribute(string $attribute, mixed $value): self
+    {
+        $this->attributes[$attribute] = $value;
         return $this;
     }
 
-    public function getDriver(): string
+    /**
+     * @inheritDoc
+     */
+    public function getId(): int
     {
-        return $this->getAttribute('driver');
+        return $this->getAttribute('id');
     }
 
-    public function setFilename(string $filename): static
+    /**
+     * @inheritDoc
+     */
+    public function setId(int $id): self
     {
-        $this->setAttribute('filename', $filename);
-
-        return $this;
+        return $this->setAttribute('id', $id);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getFilename(): string
     {
         return $this->getAttribute('filename');
     }
 
-    public function setSize(int $size): static
+    /**
+     * @inheritDoc
+     */
+    public function setFilename(string $filename): self
     {
-        $this->setAttribute('size', $size);
-
-        return $this;
+        return $this->setAttribute('filename', $filename);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getDisk(): string
+    {
+        return $this->getAttribute('disk');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setDisk(string $disk): self
+    {
+        return $this->setAttribute('disk', $disk);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCreatedAt(): Carbon
+    {
+        return $this->getAttribute('created_at');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setCreatedAt(Carbon $date): self
+    {
+        return $this->setAttribute('created_at', $date);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getSize(): int
     {
         return $this->getAttribute('size');
     }
 
-    public function setDate(Carbon $date): static
+    /**
+     * @inheritDoc
+     */
+    public function setSize(int $size): self
     {
-        $this->setAttribute('date', $date);
-
-        return $this;
-    }
-
-    public function getDate(): Carbon
-    {
-        return $this->getAttribute('date');
+        return $this->setAttribute('size', $size);
     }
 
     /**
-     * Save the model to the database.
-     *
-     * @param  array  $options
-     * @return bool
+     * @inheritDoc
      */
-    public function save(array $options = []): bool
+    public function toArray(): array
     {
-        $this->mergeAttributesFromCachedCasts();
-        if ($this->fireModelEvent('saving') === false) {
-            return false;
+        return $this->getAttributes();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Pure]
+    public function offsetExists(mixed $offset): bool
+    {
+        return $this->hasAttribute($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->getAttribute($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->setAttribute($offset, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        $this->setAttribute($offset, null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toJson($options = 0): bool|string
+    {
+        return json_encode($this->getAttributes(), $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    public static function getFilePath(): string
+    {
+        return config('backup.database.path', storage_path('backups.json'));
+    }
+
+    public static function all(): Collection
+    {
+        if (!is_null(static::$cache)) {
+            return collect(static::$cache);
         }
 
-        // @todo save
+        static::$cache = [];
 
-        $this->finishSave($options);
-        return true;
+        $backups = @json_decode(@file_get_contents(static::getFilePath()));
+        foreach ($backups ?? [] as $backup) {
+            $backup = new static((array) $backup);
+            static::$cache[] = $backup;
+        }
+
+        return static::all();
+    }
+
+    public static function create(array $attributes): static
+    {
+        if (!array_key_exists('id', $attributes)) {
+            $attributes['id'] = time().rand(0, 999999);
+        }
+
+        if (!array_key_exists('created_at', $attributes)) {
+            $attributes['created_at'] = now();
+        }
+
+        static::$cache[] = $model = new static($attributes);
+        file_put_contents(
+            static::getFilePath(),
+            static::all()->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+        );
+
+        return $model;
     }
 }
