@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use IsaEken\LaravelBackup\Backup;
-use IsaEken\LaravelBackup\ConfigReader;
 
 class BackupCommand extends Command
 {
@@ -16,9 +15,10 @@ class BackupCommand extends Command
 
     public function handle(): int
     {
-        $notifications = ! $this->option('disable-notifications');
-        $services = ConfigReader::getServices($this->explodeOption('services'));
-        $storages = ConfigReader::getStorages($this->explodeOption('storages'));
+        $notifications = !$this->option('disable-notifications');
+        $services = $this->explodeOption($this->option('services'));
+        $storages = $this->explodeOption($this->option('storages'));
+
         $backup = new Backup();
 
         $this->comment('Starting backup...');
@@ -52,11 +52,18 @@ class BackupCommand extends Command
         }
     }
 
-    private function explodeOption(string $key): array|string
+    private function explodeOption(array $option): array
     {
-        $option = $this->option($key) ?? '*';
-        $option = (is_array($option) && count($option) < 1) || (is_string($option) && strlen($option) < 1) ? '*' : $option;
+        $values = [];
 
-        return $option === '*' ? $option : explode(',', $option);
+        foreach ($option as $item) {
+            if (is_string($item)) {
+                $values[] = str($item)->explode(',')->toArray();
+            } else {
+                $values[] = $item;
+            }
+        }
+
+        return collect($values)->collapse()->toArray();
     }
 }
