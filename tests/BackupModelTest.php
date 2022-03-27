@@ -25,14 +25,15 @@ class BackupModelTest extends TestCase
         $attributes = [
             'filename' => 'TestBackup',
             'disk' => 'local',
-            'date' => Carbon::make('-5 minutes'),
+            'created_at' => Carbon::make('-5 minutes'),
             'size' => 1024,
         ];
 
-        $model = Backup::create($attributes)->attributesToArray();
-        dd($model->size);
+        $model = Backup::create($attributes)->getAttributes();
         foreach ($attributes as $key => $value) {
-            $this->assertEquals($value, $model->$key);
+            $this->assertEquals($value, $model[$key]);
         }
+
+        $this->assertCount($beforeCount + 1, Backup::all());
     }
 }
