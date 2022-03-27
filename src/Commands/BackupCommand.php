@@ -36,7 +36,7 @@ class BackupCommand extends Command
         }
 
         $backup
-            ->setPassword(config('backup.password', ''))
+            ->setPassword(config('backup.password', '') ?? '')
             ->setOutput($this->getOutput())
             ->notifications($notifications);
 
