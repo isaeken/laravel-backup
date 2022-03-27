@@ -58,14 +58,16 @@ class BackupServiceProvider extends PackageServiceProvider
     }
 
     /**
-     * @return array<Service>
+     * @return array<string, Service>
      */
     public function getServices(): array
     {
         $services = collect();
         $makeServiceCollection = function ($array) {
-            return collect($array)->map(function ($service) {
-                return new $service();
+            return collect($array)->mapWithKeys(function ($service) {
+                /** @var Service $service */
+                $service = new $service();
+                return [$service->getName() => $service];
             });
         };
 
@@ -96,7 +98,7 @@ class BackupServiceProvider extends PackageServiceProvider
     }
 
     /**
-     * @return array<Filesystem>
+     * @return array<string, Filesystem>
      */
     public function getStorages(): array
     {
