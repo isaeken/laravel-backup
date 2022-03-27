@@ -4,8 +4,10 @@ namespace IsaEken\LaravelBackup\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Log;
 use IsaEken\LaravelBackup\Backup;
+use IsaEken\LaravelBackup\Contracts\Backup\Service;
 
 class BackupCommand extends Command
 {
@@ -19,6 +21,14 @@ class BackupCommand extends Command
         $services = $this->explodeOption($this->option('services'));
         $storages = $this->explodeOption($this->option('storages'));
 
+        if (count($services) < 1) {
+            $services = getBackupServiceProvider()->getServices();
+        }
+
+        if (count($storages) < 1) {
+            $storages = getBackupServiceProvider()->getStorages();
+        }
+
         $backup = new Backup();
 
         $this->comment('Starting backup...');
@@ -27,12 +37,25 @@ class BackupCommand extends Command
             set_time_limit((int) $this->option('timeout'));
         }
 
-        foreach ($services as $service) {
+        foreach ($services as $name => $service) {
+            if (!$service instanceof Service) {
+                $service = getBackupServiceProvider()->getService($service);
+
+                if (is_null($service)) {
+                    $this->error("Service \"$service\" is not exists.");
+                    return 1;
+                }
+            }
+
             $backup->addBackupService($service);
         }
 
-        foreach ($storages as $storage) {
-            $backup->addBackupStorage($storage);
+        foreach ($storages as $name => $storage) {
+            if ($storage instanceof Filesystem) {
+                $backup->addBackupStorage($storage, $name);
+            } else {
+                $backup->addBackupStorage(getBackupServiceProvider()->getStorage($storage), $storage);
+            }
         }
 
         $backup
