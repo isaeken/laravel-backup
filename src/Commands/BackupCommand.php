@@ -17,7 +17,7 @@ class BackupCommand extends Command
 
     public function handle(): int
     {
-        $notifications = !$this->option('disable-notifications');
+        $notifications = ! $this->option('disable-notifications');
         $services = $this->explodeOption($this->option('services'));
         $storages = $this->explodeOption($this->option('storages'));
 
@@ -38,11 +38,12 @@ class BackupCommand extends Command
         }
 
         foreach ($services as $name => $service) {
-            if (!$service instanceof Service) {
+            if (! $service instanceof Service) {
                 $service = getBackupServiceProvider()->getService($service);
 
                 if (is_null($service)) {
                     $this->error("Service \"$service\" is not exists.");
+
                     return 1;
                 }
             }

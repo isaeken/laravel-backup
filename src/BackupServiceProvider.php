@@ -67,6 +67,7 @@ class BackupServiceProvider extends PackageServiceProvider
             return collect($array)->mapWithKeys(function ($service) {
                 /** @var Service $service */
                 $service = new $service();
+
                 return [$service->getName() => $service];
             });
         };
@@ -94,6 +95,7 @@ class BackupServiceProvider extends PackageServiceProvider
     {
         /** @var FilesystemManager $filesystemManager */
         $filesystemManager = $this->app->get('filesystem');
+
         return $filesystemManager->drive($name);
     }
 
