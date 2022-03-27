@@ -1,8 +1,9 @@
 <?php
 
 use Carbon\Carbon;
+use IsaEken\LaravelBackup\BackupServiceProvider;
 
-if (! function_exists('humanReadableFileSize')) {
+if (!function_exists('humanReadableFileSize')) {
     function humanReadableFileSize(float $bytes): string
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -19,14 +20,14 @@ if (! function_exists('humanReadableFileSize')) {
     }
 }
 
-if (! function_exists('ageInDays')) {
+if (!function_exists('ageInDays')) {
     function ageInDays(Carbon $date): string
     {
         return number_format(round($date->diffInMinutes() / (24 * 60), 2), 2).' ('.$date->diffForHumans().')';
     }
 }
 
-if (! function_exists('isLargeFileSize')) {
+if (!function_exists('isLargeFileSize')) {
     function isLargeFileSize(float $bytes, int $gigabytes = 4): bool
     {
         if ($bytes < 1024) {
@@ -42,5 +43,12 @@ if (! function_exists('isLargeFileSize')) {
         }
 
         return $i > 3;
+    }
+}
+
+if (!function_exists('getBackupServiceProvider')) {
+    function getBackupServiceProvider(): BackupServiceProvider
+    {
+        return collect(app()->getProviders(BackupServiceProvider::class))->first();
     }
 }
