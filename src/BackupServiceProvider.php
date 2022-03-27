@@ -91,7 +91,7 @@ class BackupServiceProvider extends PackageServiceProvider
     public function getStorage(string $name): Filesystem
     {
         /** @var FilesystemManager $filesystemManager */
-        $filesystemManager = $this->app->factory('filesystem');
+        $filesystemManager = $this->app->get('filesystem');
         return $filesystemManager->drive($name);
     }
 
