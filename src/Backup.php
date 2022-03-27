@@ -117,33 +117,30 @@ class Backup implements Manager, HasLogger, HasBackupServices, HasBackupStorages
     protected function storeBackups(array $backupServices)
     {
         foreach ($backupServices as $backupService) {
-            foreach ($this->getBackupStorages() as $driver => $storage) {
+            foreach ($this->getBackupStorages() as $disk => $storage) {
                 $filename = $this->makeFilename(basename($backupService->getOutputFile()), $backupService);
 
-                $this->debug(trans('Saving backup ":service" to ":filename" with using driver: :driver', [
+                $this->debug(trans('Saving backup ":service" to ":filename" in disk: :disk', [
                     'service' => $backupService->getName(),
                     'filename' => $filename,
-                    'driver' => $driver,
+                    'disk' => $disk,
                 ]));
 
                 if ($storage->put($filename, file_get_contents($backupService->getOutputFile()))) {
-                    $model = new (config('backup.model', Models\Backup::class))();
-                    $model->fill([
-                        'filesystem' => $storage,
-                        'driver' => $driver,
+                    (config('backup.model', Models\Backup::class))::create([
                         'filename' => $filename,
+                        'disk' => $disk,
                         'size' => $storage->size($filename),
-                        'date' => now(),
+                        'created_at' => now(),
                     ]);
-                    $model->save();
                     $this->debug(trans('Backup saved successfully.'));
                 } else {
                     $this->error(trans(
-                        'Backup ":service" cannot be saved to ":filename" with using driver: ":driver"',
+                        'Backup ":service" cannot be saved to ":filename" in disk: ":disk"',
                         [
                             'service' => $backupService->getName(),
                             'filename' => $filename,
-                            'driver' => $driver,
+                            'disk' => $disk,
                         ]
                     ));
                 }
