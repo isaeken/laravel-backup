@@ -29,7 +29,7 @@ class ZipCompressor implements Compressor, HasPassword
         $source = $source->replace('\\', DIRECTORY_SEPARATOR);
         $source = $source->replace('/', DIRECTORY_SEPARATOR);
 
-        return Str::after($path, $source);
+        return Str::of($path)->after($source)->ltrim('/');
     }
 
     public function __construct()
@@ -81,7 +81,7 @@ class ZipCompressor implements Compressor, HasPassword
     {
         throw_unless(is_dir($this->getSource()), FileNotFoundException::class, $this->getSource());
 
-        if (! $this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
+        if (!$this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
             return false;
         }
 
