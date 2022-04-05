@@ -50,10 +50,14 @@ it('is converts paths to zip paths', function () {
     ];
 
     foreach ($paths as $excepted => $actual) {
-        assertEquals(convertToZipPath($excepted,
-            '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world'), $actual);
-        assertEquals(convertToZipPath($excepted,
-            '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world/'), $actual);
+        assertEquals(convertToZipPath(
+            $excepted,
+            '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world'
+        ), $actual);
+        assertEquals(convertToZipPath(
+            $excepted,
+            '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world/'
+        ), $actual);
     }
 
     Filename::mockDirectorySeparator('\\');
