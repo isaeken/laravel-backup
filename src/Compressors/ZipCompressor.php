@@ -88,22 +88,16 @@ class ZipCompressor implements Compressor, HasPassword
 
         $source = realpath($this->getSource());
 
-        var_dump($source);
-
         if (is_dir($source) === true) {
             $files = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($source),
                 RecursiveIteratorIterator::SELF_FIRST
             );
 
-            var_dump($files);
-
             foreach ($files as $file) {
                 if (in_array(substr($file, strrpos($file, DIRECTORY_SEPARATOR) + 1), ['.', '..'])) {
                     continue;
                 }
-
-                var_dump('file: '.$file, 'zipped file: '.$this->zippedPath($file));
 
                 $file = realpath($file);
                 if (is_dir($file) === true) {
@@ -114,7 +108,6 @@ class ZipCompressor implements Compressor, HasPassword
                         throw UnableToReadFile::fromLocation($file);
                     }
 
-                    var_dump('content: ', $contents);
                     $this->zipArchive->addFromString($this->zippedPath($file), $contents);
 
                     if (mb_strlen($this->getPassword()) > 0) {
