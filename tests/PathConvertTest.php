@@ -44,6 +44,18 @@ it('is converts paths to zip paths', function () {
         assertEquals(convertToZipPath($excepted, '/home/test/zip/'), $actual);
     }
 
+    $paths = [
+        '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world/test.txt' => 'test.txt',
+        '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world/test/test.txt' => 'test'.ZipCompressor::SEPARATOR.'test.txt',
+    ];
+
+    foreach ($paths as $excepted => $actual) {
+        assertEquals(convertToZipPath($excepted,
+            '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world'), $actual);
+        assertEquals(convertToZipPath($excepted,
+            '/private/var/folders/00/abcd0000000_a_aaaaaa0aaa0000aa/T/hello-world/'), $actual);
+    }
+
     Filename::mockDirectorySeparator('\\');
 
     $paths = [
