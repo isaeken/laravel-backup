@@ -82,7 +82,7 @@ class ZipCompressor implements Compressor, HasPassword
     {
         throw_unless(is_dir($this->getSource()), FileNotFoundException::class, $this->getSource());
 
-        if (!$this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
+        if (! $this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
             return false;
         }
 
