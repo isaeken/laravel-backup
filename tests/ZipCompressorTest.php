@@ -4,11 +4,11 @@ namespace IsaEken\LaravelBackup\Tests;
 
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
 use IsaEken\LaravelBackup\Filename;
-use ZipArchive;
 use function PHPUnit\Framework\assertArrayHasKey;
 use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
+use ZipArchive;
 
 it('is compressing files', function () {
     Filename::mockDirectorySeparator(DIRECTORY_SEPARATOR);
