@@ -7,6 +7,18 @@ use IsaEken\LaravelBackup\Contracts\Backup\Service;
 
 class Filename
 {
+    private static string $directorySeparator;
+
+    public static function mockDirectorySeparator(string $separator): void
+    {
+        static::$directorySeparator = $separator;
+    }
+
+    public static function directorySeparator(): string
+    {
+        return static::$directorySeparator ?? DIRECTORY_SEPARATOR;
+    }
+
     public bool $camelCase = false;
 
     public bool $addExtension = true;
@@ -52,7 +64,7 @@ class Filename
                 return $string;
             })
             ->replaceMatches("/\:([a-z\.\_A-Z])+\:/", function ($match) {
-                if (! isset($match[0])) {
+                if (!isset($match[0])) {
                     return '';
                 }
 
