@@ -64,7 +64,7 @@ class Filename
                 return $string;
             })
             ->replaceMatches("/\:([a-z\.\_A-Z])+\:/", function ($match) {
-                if (!isset($match[0])) {
+                if (! isset($match[0])) {
                     return '';
                 }
 
