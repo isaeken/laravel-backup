@@ -3,7 +3,6 @@
 namespace IsaEken\LaravelBackup\Compressors;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Contracts\Compressor;
 use IsaEken\LaravelBackup\Contracts\HasPassword;
 use IsaEken\LaravelBackup\Exceptions\MissingExtensionException;
@@ -26,11 +25,7 @@ class ZipCompressor implements Compressor, HasPassword
 
     private function zippedPath(string $path): string
     {
-        $source = Str::of($this->getSource().DIRECTORY_SEPARATOR);
-        $source = $source->replace('\\', DIRECTORY_SEPARATOR);
-        $source = $source->replace('/', DIRECTORY_SEPARATOR);
-
-        return Str::of($path)->after($source)->ltrim('/')->ltrim('\\')->value();
+        return convertToZipPath($path, $this->getSource());
     }
 
     public function __construct()

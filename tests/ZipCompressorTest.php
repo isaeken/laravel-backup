@@ -2,8 +2,8 @@
 
 namespace IsaEken\LaravelBackup\Tests;
 
-use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
+use IsaEken\LaravelBackup\Filename;
 use ZipArchive;
 use function PHPUnit\Framework\assertArrayHasKey;
 use function PHPUnit\Framework\assertContains;
@@ -11,6 +11,8 @@ use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
 
 it('is compressing files', function () {
+    Filename::mockDirectorySeparator(DIRECTORY_SEPARATOR);
+
     $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-backup-test-'.rand(0, 10000);
     @mkdir($directory);
 
@@ -49,6 +51,8 @@ it('is compressing files', function () {
 });
 
 it('is compressing nested', function () {
+    Filename::mockDirectorySeparator(DIRECTORY_SEPARATOR);
+
     $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-backup-test-'.rand(0, 10000);
     @mkdir($directory);
 
@@ -101,7 +105,7 @@ it('is compressing nested', function () {
             for ($c = 1; $c < 4; $c++) {
                 assertEquals(
                     'Hello World',
-                    $zip->getFromName(Str::replace('/', DIRECTORY_SEPARATOR, "dir$a/dir$b/dir$c/test.txt"))
+                    $zip->getFromName(convertToZipPath("dir$a/dir$b/dir$c/test.txt"))
                 );
             }
         }
@@ -111,6 +115,8 @@ it('is compressing nested', function () {
 });
 
 it('is compressing with password', function () {
+    Filename::mockDirectorySeparator(DIRECTORY_SEPARATOR);
+
     $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-backup-test-'.rand(0, 10000);
     @mkdir($directory);
     $password = time().'abc';
