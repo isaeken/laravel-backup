@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Contracts\Compressor;
 use IsaEken\LaravelBackup\Contracts\HasPassword;
 use IsaEken\LaravelBackup\Exceptions\MissingExtensionException;
+use League\Flysystem\UnableToReadFile;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
@@ -81,7 +82,7 @@ class ZipCompressor implements Compressor, HasPassword
     {
         throw_unless(is_dir($this->getSource()), FileNotFoundException::class, $this->getSource());
 
-        if (! $this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
+        if (!$this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
             return false;
         }
 
@@ -102,7 +103,12 @@ class ZipCompressor implements Compressor, HasPassword
                 if (is_dir($file) === true) {
                     $this->zipArchive->addEmptyDir($this->zippedPath($file));
                 } elseif (is_file($file) === true) {
-                    $this->zipArchive->addFromString($this->zippedPath($file), file_get_contents($file));
+                    $contents = file_get_contents($file);
+                    if ($contents === false) {
+                        throw UnableToReadFile::fromLocation($file);
+                    }
+
+                    $this->zipArchive->addFromString($this->zippedPath($file), $contents);
 
                     if (mb_strlen($this->getPassword()) > 0) {
                         $this->zipArchive->setEncryptionName(
@@ -114,7 +120,12 @@ class ZipCompressor implements Compressor, HasPassword
                 }
             }
         } elseif (is_file($source) === true) {
-            $this->zipArchive->addFromString(basename($source), file_get_contents($source));
+            $contents = file_get_contents($source);
+            if ($contents === false) {
+                throw UnableToReadFile::fromLocation($source);
+            }
+
+            $this->zipArchive->addFromString(basename($source), $contents);
 
             if (mb_strlen($this->getPassword()) > 0) {
                 $this->zipArchive->setEncryptionName(

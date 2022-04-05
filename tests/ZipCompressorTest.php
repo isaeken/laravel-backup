@@ -39,7 +39,7 @@ it('is compressing files', function () {
         $filename = basename($stat['name']);
         assertArrayHasKey($filename, $files);
         assertContains($zip->getFromName($filename), $files, sprintf(
-            'Failed asserting that an zip file contains %s (filename: %s)',
+            'Failed asserting that an zip file contains "%s" (filename: "%s")',
             $zip->getFromName($filename),
             $filename,
         ));
