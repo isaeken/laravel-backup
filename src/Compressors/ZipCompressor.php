@@ -29,7 +29,7 @@ class ZipCompressor implements Compressor, HasPassword
         $source = $source->replace('\\', DIRECTORY_SEPARATOR);
         $source = $source->replace('/', DIRECTORY_SEPARATOR);
 
-        return Str::of($path)->after($source)->ltrim('/', '\\');
+        return Str::of($path)->after($source)->ltrim('/')->ltrim('\\')->value();
     }
 
     public function __construct()
