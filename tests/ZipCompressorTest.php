@@ -4,9 +4,11 @@ namespace IsaEken\LaravelBackup\Tests;
 
 use Illuminate\Support\Str;
 use IsaEken\LaravelBackup\Compressors\ZipCompressor;
+use ZipArchive;
+use function PHPUnit\Framework\assertArrayHasKey;
+use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
-use ZipArchive;
 
 it('is compressing files', function () {
     $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-backup-test-'.rand(0, 10000);
@@ -14,7 +16,7 @@ it('is compressing files', function () {
 
     $files = [
         'test1.txt' => 'Hello World 1',
-        'test2.txt' => time(),
+        'test2.txt' => (string) time(),
         'test3.txt' => '❤️❤️❤️',
     ];
 
@@ -35,9 +37,8 @@ it('is compressing files', function () {
     for ($i = 0; $i < $zip->numFiles; $i++) {
         $stat = $zip->statIndex($i);
         $filename = basename($stat['name']);
-
-        assertEquals($filename, collect($files)->keys()->toArray()[$i]);
-        assertEquals($zip->getFromName($filename), $files[$filename]);
+        assertArrayHasKey($filename, $files);
+        assertContains($zip->getFromName($filename), $files);
     }
 
     @rmdir($directory);
