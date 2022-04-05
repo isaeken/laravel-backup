@@ -15,6 +15,8 @@ class ZipCompressor implements Compressor, HasPassword
 {
     use \IsaEken\LaravelBackup\Traits\HasPassword;
 
+    public const SEPARATOR = '\\';
+
     public const FILENAME_FORMAT = 'Y-m-d-H-i-s.\z\i\p';
 
     protected ZipArchive $zipArchive;
@@ -77,7 +79,7 @@ class ZipCompressor implements Compressor, HasPassword
     {
         throw_unless(is_dir($this->getSource()), FileNotFoundException::class, $this->getSource());
 
-        if (! $this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
+        if (!$this->zipArchive->open($this->getDestination(), ZipArchive::CREATE)) {
             return false;
         }
 

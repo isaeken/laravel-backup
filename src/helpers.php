@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use IsaEken\LaravelBackup\BackupServiceProvider;
+use IsaEken\LaravelBackup\Compressors\ZipCompressor;
 use IsaEken\LaravelBackup\Filename;
 
 if (!function_exists('humanReadableFileSize')) {
@@ -104,7 +105,7 @@ if (!function_exists('convertToZipPath')) {
 
         return str(replacePathSeparators($path))
             ->trim(Filename::directorySeparator())
-            ->replace(['\\', '/'], '\\')
+            ->replace(['\\', '/'], ZipCompressor::SEPARATOR)
             ->value();
     }
 }
